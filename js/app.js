@@ -261,7 +261,7 @@ function renderCheckinStep() {
   // 이름을 아직 모르면 이름부터 (스토리: "앞으로 계속 같이 있을 건데, 너라고 부를 순 없으니까.")
   if (!state.userName && checkin.step === -1) {
     checkinBody.innerHTML = `
-      <div class="ice-line"><span class="mini-ice">🧊</span>
+      <div class="ice-line"><img class="sprite sm mini-ice-sprite" src="assets/binglee/standing.png" alt="빙글이" draggable="false" />
         <p>좋아, 그럼 오늘의 상태 확인부터 하자.\n…아, 그 전에. 이름이 뭐야?\n앞으로 계속 같이 있을 건데, 너라고 부를 순 없으니까.</p>
       </div>
       <form class="name-form" id="name-form">
@@ -276,7 +276,7 @@ function renderCheckinStep() {
       localStorage.setItem('bingle_user_name', v);
       renderGreeting();
       checkinBody.innerHTML = `
-        <div class="ice-line"><span class="mini-ice">🧊</span>
+        <div class="ice-line"><img class="sprite sm mini-ice-sprite" src="assets/binglee/standing.png" alt="빙글이" draggable="false" />
           <p>${v}… ${v}…\n(자기 몸집만 한 연필로 힘겹게 적는 중)\n그럼, 잘 부탁해. ${v}!</p>
         </div>`;
       setTimeout(() => { checkin.step = 0; renderCheckinStep(); }, 1600);
@@ -290,7 +290,7 @@ function renderCheckinStep() {
   if (checkin.step < QUESTIONS.length) {
     const q = QUESTIONS[checkin.step];
     checkinBody.innerHTML = `
-      <div class="ice-line"><span class="mini-ice">🧊</span><p>${q.intro}</p></div>
+      <div class="ice-line"><img class="sprite sm mini-ice-sprite" src="assets/binglee/standing.png" alt="빙글이" draggable="false" /><p>${q.intro}</p></div>
       <p class="q-count">질문 ${checkin.step + 1} / ${QUESTIONS.length}</p>
       <div class="ice-line" style="margin-bottom:10px"><span class="mini-ice">📜</span>
         <p><b>${q.text}</b></p>
@@ -303,7 +303,7 @@ function renderCheckinStep() {
         checkin.answers[checkin.step] = v;
         // 빙글이의 얄미운 코멘트
         checkinBody.innerHTML = `
-          <div class="ice-line"><span class="mini-ice">🧊</span><p>${q.reply[v - 1]}</p></div>`;
+          <div class="ice-line"><img class="sprite sm mini-ice-sprite" src="assets/binglee/standing.png" alt="빙글이" draggable="false" /><p>${q.reply[v - 1]}</p></div>`;
         setTimeout(() => { checkin.step += 1; renderCheckinStep(); }, 1400);
       });
     });
@@ -325,7 +325,7 @@ function renderCheckinStep() {
   }
 
   checkinBody.innerHTML = `
-    <div class="ice-line"><span class="mini-ice">🧊</span><p>${verdict}</p></div>
+    <div class="ice-line"><img class="sprite sm mini-ice-sprite" src="assets/binglee/standing.png" alt="빙글이" draggable="false" /><p>${verdict}</p></div>
     <div class="ice-line"><span class="mini-ice">📜</span>
       <p>오늘의 감정 온도: <b>${state.temp}°C</b>\n${state.temp < MELT_LINE ? '(…이 온도면 나 좀 빨리 녹아. 미션 부탁해.)' : '(이 정도면 나 오늘 잘 버틸 수 있어!)'}</p>
     </div>
@@ -360,27 +360,29 @@ $('#decor-fab').addEventListener('click', () => {
    V-log 모아보기(셋로그식) · 편지 쓰기 · 동굴 방문
    ============================================ */
 
-/* ---------- 활동 사전: 빙글이가 대신 재현하는 동작 ---------- */
+/* ---------- 활동 사전: 빙글이가 대신 재현하는 동작 ----------
+   pose: 픽셀 스프라이트 포즈 (standing / sitting / working) */
 const ACT = {
-  wake:    { emoji: '⏰', bg: '#fff3e0', doing: '기지개를 켜는 중', anim: 'mb-jump' },
-  work:    { emoji: '💻', bg: '#e3f2fd', doing: '노트북을 열심히 두드리는 중', anim: 'mb-type' },
-  coffee:  { emoji: '☕', bg: '#efebe9', doing: '커피를 홀짝이는 중', anim: '' },
-  lunch:   { emoji: '🍱', bg: '#fffde7', doing: '점심을 냠냠 먹는 중', anim: '' },
-  meeting: { emoji: '🗣️', bg: '#ede7f6', doing: '회의에서 열심히 끄덕이는 중', anim: 'mb-sway' },
-  walk:    { emoji: '🌳', bg: '#e8f5e9', doing: '저벅저벅 산책하는 중', anim: 'mb-walk' },
-  movie:   { emoji: '🍿', bg: '#fce4ec', doing: '영화에 푹 빠져 있는 중', anim: '' },
-  gym:     { emoji: '🏋️', bg: '#e0f2f1', doing: '으쌰으쌰 운동하는 중', anim: 'mb-jump' },
-  book:    { emoji: '📚', bg: '#f3e5f5', doing: '책장을 사락사락 넘기는 중', anim: '' },
-  music:   { emoji: '🎧', bg: '#e8eaf6', doing: '음악에 몸을 흔드는 중', anim: 'mb-sway' },
-  game:    { emoji: '🎮', bg: '#e1f5fe', doing: '게임에 초집중하는 중', anim: 'mb-type' },
-  sleep:   { emoji: '💤', bg: '#ede7f6', doing: '쿨쿨 자는 중', anim: 'mb-sleep' },
-  cook:    { emoji: '🍳', bg: '#fff8e1', doing: '뚝딱뚝딱 요리하는 중', anim: 'mb-type' },
+  wake:    { emoji: '⏰', bg: '#fff3e0', doing: '기지개를 켜는 중', anim: 'mb-jump', pose: 'standing' },
+  work:    { emoji: '💻', bg: '#e3f2fd', doing: '노트북을 열심히 두드리는 중', anim: 'mb-type', pose: 'working' },
+  coffee:  { emoji: '☕', bg: '#efebe9', doing: '커피를 홀짝이는 중', anim: '', pose: 'sitting' },
+  lunch:   { emoji: '🍱', bg: '#fffde7', doing: '점심을 냠냠 먹는 중', anim: '', pose: 'sitting' },
+  meeting: { emoji: '🗣️', bg: '#ede7f6', doing: '회의에서 열심히 끄덕이는 중', anim: 'mb-sway', pose: 'standing' },
+  walk:    { emoji: '🌳', bg: '#e8f5e9', doing: '저벅저벅 산책하는 중', anim: 'mb-walk', pose: 'standing' },
+  movie:   { emoji: '🍿', bg: '#fce4ec', doing: '영화에 푹 빠져 있는 중', anim: '', pose: 'sitting' },
+  gym:     { emoji: '🏋️', bg: '#e0f2f1', doing: '으쌰으쌰 운동하는 중', anim: 'mb-jump', pose: 'standing' },
+  book:    { emoji: '📚', bg: '#f3e5f5', doing: '책장을 사락사락 넘기는 중', anim: '', pose: 'working' },
+  music:   { emoji: '🎧', bg: '#e8eaf6', doing: '음악에 몸을 흔드는 중', anim: 'mb-sway', pose: 'sitting' },
+  game:    { emoji: '🎮', bg: '#e1f5fe', doing: '게임에 초집중하는 중', anim: 'mb-type', pose: 'sitting' },
+  sleep:   { emoji: '💤', bg: '#ede7f6', doing: '쿨쿨 자는 중', anim: 'mb-sleep', pose: 'sitting' },
+  cook:    { emoji: '🍳', bg: '#fff8e1', doing: '뚝딱뚝딱 요리하는 중', anim: 'mb-type', pose: 'working' },
 };
 
-/* ---------- 마을 주민 데이터 (프로토타입 목업) ---------- */
+/* ---------- 마을 주민 데이터 (프로토타입 목업) ----------
+   tint: 스프라이트 색조 필터 — 친구마다 빙글이 색이 다르다 */
 const PEOPLE = [
   {
-    id: 'me', me: true, color: '#b9e5f8', rest: '21~23시', status: 'rest',
+    id: 'me', me: true, color: '#b9e5f8', tint: 'none', rest: '21~23시', status: 'rest',
     pos: { x: 50, y: 88 },
     vlog: [
       { t: '07:30', act: 'wake', label: '기상 성공!' },
@@ -392,7 +394,7 @@ const PEOPLE = [
     ],
   },
   {
-    id: 'yurim', name: '유림', color: '#ffd6e8', rest: '21~23시', status: 'rest', now: 'movie',
+    id: 'yurim', name: '유림', color: '#ffd6e8', tint: 'hue-rotate(140deg) saturate(0.75) brightness(1.06)', rest: '21~23시', status: 'rest', now: 'movie',
     pos: { x: 18, y: 46 },
     vlog: [
       { t: '08:00', act: 'gym', label: '아침 운동 완료' },
@@ -403,7 +405,7 @@ const PEOPLE = [
     ],
   },
   {
-    id: 'gyubin', name: '규빈', color: '#d6f5d6', rest: '22~24시', status: 'busy', now: 'work',
+    id: 'gyubin', name: '규빈', color: '#d6f5d6', tint: 'hue-rotate(290deg) saturate(0.8) brightness(1.04)', rest: '22~24시', status: 'busy', now: 'work',
     pos: { x: 82, y: 44 },
     vlog: [
       { t: '09:00', act: 'work', label: '코딩 시작' },
@@ -413,7 +415,7 @@ const PEOPLE = [
     ],
   },
   {
-    id: 'junho', name: '준호', color: '#ffe9c7', rest: '21~23시', status: 'rest', now: 'music',
+    id: 'junho', name: '준호', color: '#ffe9c7', tint: 'hue-rotate(195deg) saturate(0.65) brightness(1.1)', rest: '21~23시', status: 'rest', now: 'music',
     pos: { x: 30, y: 72 },
     vlog: [
       { t: '07:00', act: 'walk', label: '아침 산책' },
@@ -423,7 +425,7 @@ const PEOPLE = [
     ],
   },
   {
-    id: 'sohee', name: '소희', color: '#e3d9ff', rest: '20~22시', status: 'rest', now: 'book',
+    id: 'sohee', name: '소희', color: '#e3d9ff', tint: 'hue-rotate(60deg) saturate(0.7) brightness(1.05)', rest: '20~22시', status: 'rest', now: 'book',
     pos: { x: 71, y: 74 },
     vlog: [
       { t: '08:30', act: 'coffee', label: '모닝 커피' },
@@ -448,11 +450,11 @@ const getSent = () => JSON.parse(localStorage.getItem(sentKey) || '[]');
 
 function personName(p) { return p.me ? (state.userName || '나') : p.name; }
 
-function miniBingleeHTML(color, anim = '', size = '') {
-  return `<div class="mini-binglee ${size} ${anim}" style="--mb:${color}">
-    <span class="mb-eye l"></span><span class="mb-eye r"></span>
-    <span class="mb-cheek l"></span><span class="mb-cheek r"></span>
-    <span class="mb-mouth"></span></div>`;
+/* 픽셀 스프라이트 빙글이 — pose: standing / sitting / working */
+function miniBingleeHTML(person, anim = '', size = '', pose = 'standing') {
+  const tint = person.tint && person.tint !== 'none' ? `filter:${person.tint}` : '';
+  return `<img class="sprite ${size} ${anim}" src="assets/binglee/${pose}.png"
+    alt="${personName(person)}의 빙글이" draggable="false" style="${tint}" />`;
 }
 
 /* ---------- 뷰 전환 ---------- */
@@ -489,7 +491,7 @@ function renderVillage() {
     el.innerHTML = `
       <div class="cave-dome">
         ${p.me ? `<span class="cave-mail">📮 ${inbox.length}</span>` : ''}
-        ${miniBingleeHTML(p.color, '', 'sm')}
+        ${miniBingleeHTML(p, '', 'sm', 'standing')}
       </div>
       <span class="cave-name">
         <span class="st ${p.status}"></span>
@@ -534,7 +536,7 @@ function openFriendCave(p) {
       <button class="modal-close" data-close aria-label="닫기">✕</button>
     </div>
     <div class="cave-visit-scene" style="background:${act.bg}">
-      ${miniBingleeHTML(p.color, act.anim)}
+      ${miniBingleeHTML(p, act.anim, '', act.pose)}
       <div class="cave-visit-info">
         <p class="cv-name">${p.name}의 빙글이</p>
         <p class="cv-status">${p.name} 대신 ${act.doing} ${act.emoji}<br>휴식 시간: ${p.rest}</p>
@@ -606,7 +608,7 @@ function openLetter(preselectId) {
     <div class="recipient-row">
       ${sorted.map((f) => `
         <button class="recipient ${f.id === selectedId ? 'selected' : ''}" data-id="${f.id}">
-          ${miniBingleeHTML(f.color, '', 'sm')}
+          ${miniBingleeHTML(f, '', 'sm', 'standing')}
           <span>${f.name}</span>
           ${f.rest === ME.rest ? '<span class="same-rest">🕘 같은 휴식</span>' : `<span class="same-rest" style="color:#8a97a8;background:#eef2f6">${f.rest}</span>`}
         </button>`).join('')}
@@ -704,7 +706,7 @@ function renderVlog() {
     <div class="vlog-people">
       ${PEOPLE.map((pp, i) => `
         <button class="vlog-person ${i === vlog.person ? 'active' : ''}" data-i="${i}">
-          ${miniBingleeHTML(pp.color, '', 'sm')}
+          ${miniBingleeHTML(pp, '', 'sm', 'standing')}
           <span>${personName(pp)}</span>
         </button>`).join('')}
     </div>
@@ -716,7 +718,7 @@ function renderVlog() {
     <div class="vlog-scene" style="background:${act.bg}">
       <span class="vlog-time">${seg.t}</span>
       <span class="vlog-act-emoji">${act.emoji}</span>
-      ${miniBingleeHTML(p.color, act.anim, 'lg')}
+      ${miniBingleeHTML(p, act.anim, 'lg', act.pose)}
       <div class="vlog-caption">
         <p class="cap-main">${seg.label}</p>
         <p class="cap-sub">빙글이가 ${personName(p)} 대신 ${act.doing} ${act.emoji}</p>

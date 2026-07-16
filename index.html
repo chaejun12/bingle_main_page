@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css" rel="stylesheet" />
+<link rel="icon" type="image/png" href="assets/binglee/standing.png" />
 <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -87,48 +89,12 @@
 
         <div class="bubble" id="speech-bubble">톡. 톡. 나 여기 있어!</div>
 
-        <!-- 빙글이: 행복을 만드는 얼음 -->
+        <!-- 빙글이: 행복을 만드는 얼음 (픽셀 스프라이트) -->
         <div class="binglee-wrap" id="binglee">
-          <svg viewBox="0 0 200 200" class="binglee-svg" aria-hidden="true">
-            <!-- 그림자 -->
-            <ellipse cx="100" cy="184" rx="54" ry="8" fill="#9ecbe4" opacity="0.5"/>
-            <!-- 녹은 물웅덩이 (melting 상태에서 표시) -->
-            <ellipse class="melt-puddle" cx="100" cy="184" rx="68" ry="9" fill="#bfe4f6" opacity="0"/>
-            <g class="binglee-body-group">
-              <!-- 팔 -->
-              <ellipse class="arm arm-l" cx="34" cy="118" rx="12" ry="9" fill="#9ddbf5" transform="rotate(-24 34 118)"/>
-              <ellipse class="arm arm-r" cx="166" cy="118" rx="12" ry="9" fill="#9ddbf5" transform="rotate(24 166 118)"/>
-              <!-- 얼음 큐브 몸통 -->
-              <rect x="40" y="46" width="120" height="130" rx="34" fill="#b9e5f8"/>
-              <rect x="47" y="53" width="106" height="116" rx="28" fill="#c8ecfa"/>
-              <!-- 유리 반짝임 -->
-              <path d="M62 66 Q 60 64 64 60 L 84 42 Q 88 40 90 44 Z" fill="#ffffff" opacity="0.55" transform="translate(0 14)"/>
-              <rect x="56" y="62" width="10" height="34" rx="5" fill="#ffffff" opacity="0.65" transform="rotate(38 61 79)"/>
-              <rect x="74" y="56" width="7" height="20" rx="3.5" fill="#ffffff" opacity="0.5" transform="rotate(38 77 66)"/>
-              <!-- 반짝이 -->
-              <g class="crystal">
-                <path d="M152 40 L 155 47 L 162 50 L 155 53 L 152 60 L 149 53 L 142 50 L 149 47 Z" fill="#ffffff" opacity="0.9"/>
-                <path d="M40 34 L 42 39 L 47 41 L 42 43 L 40 48 L 38 43 L 33 41 L 38 39 Z" fill="#ffffff" opacity="0.7"/>
-              </g>
-              <!-- 눈: 둥근 눈 -->
-              <g class="eyes">
-                <circle class="eye" cx="78" cy="108" r="7.5" fill="#233a54"/>
-                <circle class="eye" cx="122" cy="108" r="7.5" fill="#233a54"/>
-                <circle cx="80.5" cy="105.5" r="2.6" fill="#fff"/>
-                <circle cx="124.5" cy="105.5" r="2.6" fill="#fff"/>
-              </g>
-              <!-- 볼터치 -->
-              <ellipse cx="63" cy="124" rx="9" ry="6" fill="#ffb5a3" opacity="0.75"/>
-              <ellipse cx="137" cy="124" rx="9" ry="6" fill="#ffb5a3" opacity="0.75"/>
-              <!-- 앙증맞은 입 -->
-              <path class="mouth" d="M93 124 Q 100 131 107 124" stroke="#233a54" stroke-width="3.4" stroke-linecap="round" fill="none"/>
-              <!-- 녹아 흐르는 물방울 (melting 상태에서 표시) -->
-              <path class="melt-drop" d="M156 142 q 5 7 0 11 q -5 -4 0 -11" fill="#7ec8ea" opacity="0"/>
-              <!-- 발 -->
-              <ellipse cx="76" cy="177" rx="15" ry="7" fill="#9ddbf5"/>
-              <ellipse cx="124" cy="177" rx="15" ry="7" fill="#9ddbf5"/>
-            </g>
-          </svg>
+          <div class="binglee-shadow"></div>
+          <div class="melt-puddle"></div>
+          <img class="binglee-sprite" id="binglee-sprite" src="assets/binglee/standing.png" alt="빙글이" draggable="false" />
+          <div class="melt-drop"></div>
           <div class="hearts" id="hearts"></div>
         </div>
 

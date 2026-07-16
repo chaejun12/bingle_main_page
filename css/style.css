@@ -15,11 +15,26 @@
   --coral-soft: #ffe9df;
   --mint: #7fd8be;
   --card: #ffffff;
-  --shadow: 0 6px 20px rgba(30, 58, 95, 0.08);
-  --radius: 22px;
-  --font-round: 'Jua', sans-serif;
-  --font-body: 'Gowun Dodum', sans-serif;
+  /* 픽셀 아트 테마: 부드러운 블러 대신 각진 오프셋 그림자 */
+  --shadow: 3px 3px 0 rgba(30, 58, 95, 0.10);
+  --radius: 18px;
+  --font-round: 'Galmuri11', 'Jua', sans-serif;
+  --font-body: 'Galmuri9', 'Gowun Dodum', sans-serif;
+  --pixel-border: 2px solid #d5e9f5;
 }
+
+/* ===== 픽셀 스프라이트 공통 ===== */
+.sprite,
+.binglee-sprite {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.sprite { width: 64px; height: auto; display: block; }
+.sprite.sm { width: 40px; }
+.sprite.lg { width: 150px; }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -387,21 +402,23 @@ body {
 
 .bubble.hidden { opacity: 0; transform: translateX(-50%) translateY(6px); }
 
-/* 빙글이 — 무대의 주인공, 크게 */
+/* 빙글이 — 무대의 주인공, 크게 (픽셀 스프라이트) */
 .binglee-wrap {
   position: relative;
-  width: min(72%, 320px);
-  margin-bottom: 3%;
+  width: min(64%, 290px);
+  margin-bottom: 4%;
   cursor: pointer;
   z-index: 2;
   -webkit-tap-highlight-color: transparent;
 }
 
-.binglee-svg { width: 100%; display: block; }
-
-.binglee-body-group {
+.binglee-sprite {
+  width: 100%;
+  display: block;
+  position: relative;
+  z-index: 2;
   animation: bob 3.2s ease-in-out infinite;
-  transform-origin: 100px 176px;
+  transform-origin: 50% 100%;
 }
 
 @keyframes bob {
@@ -409,21 +426,20 @@ body {
   50% { transform: translateY(-6px) scaleY(1.015); }
 }
 
-.eyes { animation: blink 4.6s infinite; transform-origin: 100px 108px; }
-
-@keyframes blink {
-  0%, 93%, 100% { transform: scaleY(1); }
-  95%, 97% { transform: scaleY(0.08); }
+.binglee-shadow {
+  position: absolute;
+  bottom: 1%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 54%;
+  height: 5%;
+  background: #9ecbe4;
+  opacity: 0.5;
+  border-radius: 50%;
+  z-index: 0;
 }
 
-.crystal { animation: sparkle 2.8s ease-in-out infinite; }
-
-@keyframes sparkle {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.binglee-wrap.happy .binglee-body-group { animation: jump 0.55s ease; }
+.binglee-wrap.happy .binglee-sprite { animation: jump 0.55s ease; }
 
 @keyframes jump {
   0%, 100% { transform: translateY(0) scale(1); }
@@ -432,6 +448,19 @@ body {
 }
 
 /* 녹는 상태 — 감정 온도가 낮을 때 */
+.melt-drop {
+  position: absolute;
+  top: 56%;
+  right: 16%;
+  width: 6%;
+  height: 8%;
+  background: #7ec8ea;
+  border-radius: 50% 50% 60% 60% / 30% 30% 70% 70%;
+  opacity: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
 .binglee-wrap.melting .melt-drop {
   opacity: 1;
   animation: drip 2.4s ease-in infinite;
@@ -439,18 +468,32 @@ body {
 
 @keyframes drip {
   0%, 55% { transform: translateY(0); opacity: 1; }
-  90% { transform: translateY(26px); opacity: 0.9; }
-  100% { transform: translateY(30px); opacity: 0; }
+  90% { transform: translateY(46px); opacity: 0.9; }
+  100% { transform: translateY(52px); opacity: 0; }
+}
+
+.melt-puddle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 74%;
+  height: 6%;
+  background: #bfe4f6;
+  border-radius: 50%;
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .binglee-wrap.melting .melt-puddle {
-  opacity: 0.8;
+  opacity: 0.85;
   animation: puddle 3s ease-in-out infinite;
 }
 
 @keyframes puddle {
-  0%, 100% { transform: scaleX(1); }
-  50% { transform: scaleX(1.06); }
+  0%, 100% { transform: translateX(-50%) scaleX(1); }
+  50% { transform: translateX(-50%) scaleX(1.07); }
 }
 
 /* 하트 이펙트 */
@@ -644,6 +687,13 @@ body {
   font-size: 26px;
   flex: none;
   margin-top: -2px;
+}
+
+.ice-line .mini-ice-sprite {
+  flex: none;
+  width: 36px;
+  margin-top: -2px;
+  animation: none;
 }
 
 .ice-line p {
@@ -926,7 +976,7 @@ body {
 }
 
 /* 동굴 앞 미니 빙글이 */
-.cave .mini-binglee {
+.cave .sprite {
   position: absolute;
   bottom: 2px;
   left: 62%;
@@ -1005,72 +1055,11 @@ body {
 }
 
 /* ============================================
-   미니 빙글이 (CSS 컴포넌트)
+   미니 빙글이 (픽셀 스프라이트 공용 컴포넌트)
    활동 재현·동굴 앞·아바타에 공용 사용
+   기본 흔들림 + 활동별 애니메이션
    ============================================ */
-.mini-binglee {
-  --mb: #b9e5f8;
-  position: relative;
-  width: 44px;
-  height: 46px;
-  background: var(--mb);
-  border-radius: 15px;
-  box-shadow: inset -4px -4px 8px rgba(30, 58, 95, 0.12), inset 3px 4px 6px rgba(255, 255, 255, 0.7);
-  animation: mbBob 2.6s ease-in-out infinite;
-}
-
-.mini-binglee.sm { width: 30px; height: 32px; border-radius: 11px; }
-.mini-binglee.lg { width: 92px; height: 96px; border-radius: 30px; }
-
-.mb-eye {
-  position: absolute;
-  top: 42%;
-  width: 16%;
-  height: 15%;
-  background: #233a54;
-  border-radius: 50%;
-}
-
-.mb-eye.l { left: 24%; }
-.mb-eye.r { right: 24%; }
-
-.mb-eye::after {
-  content: '';
-  position: absolute;
-  top: 12%;
-  left: 18%;
-  width: 40%;
-  height: 40%;
-  background: #fff;
-  border-radius: 50%;
-}
-
-.mb-cheek {
-  position: absolute;
-  top: 62%;
-  width: 18%;
-  height: 10%;
-  background: #ffb5a3;
-  opacity: 0.75;
-  border-radius: 50%;
-}
-
-.mb-cheek.l { left: 12%; }
-.mb-cheek.r { right: 12%; }
-
-.mb-mouth {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 22%;
-  height: 12%;
-  border: 2.5px solid #233a54;
-  border-top: none;
-  border-left-color: transparent;
-  border-right-color: transparent;
-  border-radius: 0 0 50% 50%;
-}
+.sprite { animation: mbBob 2.6s ease-in-out infinite; }
 
 @keyframes mbBob {
   0%, 100% { transform: translateY(0); }
@@ -1078,32 +1067,32 @@ body {
 }
 
 /* 활동별 애니메이션 */
-.mini-binglee.mb-type { animation: mbType 0.5s ease-in-out infinite; }
+.sprite.mb-type { animation: mbType 0.5s ease-in-out infinite; }
 @keyframes mbType {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   25% { transform: translateY(-2px) rotate(-2deg); }
   75% { transform: translateY(-2px) rotate(2deg); }
 }
 
-.mini-binglee.mb-walk { animation: mbWalk 0.9s ease-in-out infinite; }
+.sprite.mb-walk { animation: mbWalk 0.9s ease-in-out infinite; }
 @keyframes mbWalk {
   0%, 100% { transform: translateX(-6px) rotate(-4deg); }
   50% { transform: translateX(6px) rotate(4deg); }
 }
 
-.mini-binglee.mb-jump { animation: mbJump 0.75s ease-in-out infinite; }
+.sprite.mb-jump { animation: mbJump 0.75s ease-in-out infinite; }
 @keyframes mbJump {
   0%, 100% { transform: translateY(0) scale(1); }
   40% { transform: translateY(-13px) scale(1.04, 0.96); }
 }
 
-.mini-binglee.mb-sway { animation: mbSway 1.4s ease-in-out infinite; }
+.sprite.mb-sway { animation: mbSway 1.4s ease-in-out infinite; }
 @keyframes mbSway {
   0%, 100% { transform: rotate(-6deg); }
   50% { transform: rotate(6deg); }
 }
 
-.mini-binglee.mb-sleep { animation: mbSleep 3.4s ease-in-out infinite; }
+.sprite.mb-sleep { animation: mbSleep 3.4s ease-in-out infinite; }
 @keyframes mbSleep {
   0%, 100% { transform: scaleY(1); }
   50% { transform: scaleY(0.94); }
@@ -1165,7 +1154,7 @@ body {
 
 .vlog-person.active { opacity: 1; transform: scale(1.08); }
 
-.vlog-person .mini-binglee { animation: none; }
+.vlog-person .sprite { animation: none; }
 
 /* 진행 바 */
 .vlog-progress {
@@ -1224,7 +1213,7 @@ body {
   filter: drop-shadow(0 6px 12px rgba(30, 58, 95, 0.25));
 }
 
-.vlog-scene .mini-binglee { flex: none; }
+.vlog-scene .sprite { flex: none; }
 
 .vlog-caption {
   text-align: center;
@@ -1402,7 +1391,7 @@ body {
   padding: 1px 7px;
 }
 
-.recipient .mini-binglee { animation: none; }
+.recipient .sprite { animation: none; }
 
 .letter-templates {
   display: flex;

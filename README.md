@@ -60,6 +60,23 @@ Finch(self-care pet)와 유사한 캐릭터 중심 데일리 케어 인터페이
   선반 위 소품(`.prop[data-slot]`)이 교체 가능한 슬롯으로 준비되어 있음
 - 산책 궤적 드로잉, 감사 편지 작성, V-log 등 미션별 상세 화면
 
+## 캐릭터 & 아트 스타일
+
+빙글이는 **2D 픽셀 아트 스프라이트**(256×256, 투명 배경)로 그려진 얼음 큐브 캐릭터입니다.
+
+| 포즈 | 파일 | 쓰임 |
+|------|------|------|
+| 서기 | `assets/binglee/standing.png` | 메인 무대, 동굴 앞, 아바타, 산책/운동 재현 |
+| 앉기 | `assets/binglee/sitting.png` | 영화·음악·식사 등 휴식 활동 재현 |
+| 노트 필기 | `assets/binglee/working.png` | 일·독서·요리 활동 재현 (V-log) |
+
+- `image-rendering: pixelated`로 픽셀이 선명하게 유지되고, CSS `hue-rotate` 필터로
+  친구마다 빙글이 색이 달라집니다 (유림=핑크, 규빈=민트, 준호=웜톤, 소희=퍼플)
+- UI도 픽셀 감성에 맞춰 **Galmuri 픽셀 폰트**(제목 Galmuri11 / 본문 Galmuri9)와
+  각진 오프셋 그림자(`3px 3px 0`)를 사용합니다
+- 8방향 회전 원본은 `bingle_motion` 에셋 폴더에 있으며, 산책 기능 구현 시
+  `standing-east/west.png`를 걷기 방향 전환에 사용할 수 있습니다
+
 ## 실행
 
 정적 페이지이므로 `index.html`을 브라우저로 열면 됩니다.
@@ -68,9 +85,10 @@ Finch(self-care pet)와 유사한 캐릭터 중심 데일리 케어 인터페이
 bingle_mainpage/
 ├── index.html
 ├── css/style.css
-└── js/app.js
+├── js/app.js
+└── assets/binglee/   ← 픽셀 스프라이트 (서기·앉기·필기)
 ```
 
 ## 기술
 
-Vanilla HTML / CSS / JavaScript · Google Fonts (Jua, Gowun Dodum) · 외부 의존성 없음
+Vanilla HTML / CSS / JavaScript · Galmuri 픽셀 폰트 + Google Fonts (Jua, Gowun Dodum)
