@@ -1,6 +1,6 @@
 /* ============================================
    빙글이 Binglee — 메인 인터페이스
-   Finch-style proxy-care wellness main page
+   '행복을 만드는 얼음' 대리 돌봄 메인 페이지
    ============================================ */
 
 :root {
@@ -165,7 +165,7 @@ body {
 .temp-scale span:first-child { color: var(--ice-400); font-weight: 700; }
 .temp-scale span:last-child { color: var(--coral); font-weight: 700; }
 
-/* ===== 냉장고 무대 — 남는 공간 전부 차지 ===== */
+/* ===== 냉장고 내부 무대 — 남는 공간 전부 차지 ===== */
 .stage {
   flex: 1;
   min-height: 0;
@@ -176,11 +176,14 @@ body {
   position: relative;
   flex: 1;
   border-radius: 26px;
+  /* 냉장고 내부: 안쪽 벽 + 은은한 냉기 */
   background:
-    radial-gradient(120% 90% at 50% 0%, #eaf7fe 0%, #cfeafa 55%, #b8dff4 100%);
+    linear-gradient(90deg, rgba(140, 190, 220, 0.35) 0%, transparent 8%, transparent 92%, rgba(140, 190, 220, 0.35) 100%),
+    radial-gradient(120% 90% at 50% 0%, #eef9ff 0%, #d3ecfb 50%, #b8dff4 100%);
   border: 2.5px solid #ffffff;
   box-shadow:
     inset 0 -14px 30px rgba(94, 168, 209, 0.25),
+    inset 0 10px 24px rgba(255, 255, 255, 0.65),
     var(--shadow);
   overflow: hidden;
   display: flex;
@@ -188,15 +191,55 @@ body {
   justify-content: center;
 }
 
-.fridge-glow {
+/* 냉장고 내부 조명 */
+.fridge-light {
   position: absolute;
-  top: -30px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 75%;
-  height: 110px;
-  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.9), transparent);
+  width: 46%;
+  height: 14px;
+  background: #fdfefe;
+  border-radius: 0 0 14px 14px;
+  box-shadow: 0 6px 40px 18px rgba(255, 255, 250, 0.75);
   pointer-events: none;
+  z-index: 1;
+}
+
+/* 냉장고 선반 (내부 배경) */
+.fridge-shelf {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  height: 7px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(190, 224, 244, 0.9));
+  border-radius: 4px;
+  box-shadow: 0 3px 6px rgba(94, 168, 209, 0.25);
+  z-index: 0;
+}
+
+.shelf-1 { top: 21%; }
+.shelf-2 { top: 42%; left: 55%; }
+
+/* 선반 위 소품 — 추후 꾸미기 아이템으로 교체될 자리 */
+.fridge-shelf .prop {
+  position: absolute;
+  bottom: 7px;
+  font-size: 17px;
+  opacity: 0.85;
+  filter: drop-shadow(0 2px 2px rgba(30, 58, 95, 0.12));
+}
+
+.shelf-1 .prop:nth-child(1) { left: 8%; }
+.shelf-1 .prop:nth-child(2) { left: 24%; }
+.shelf-2 .prop:nth-child(1) { left: 18%; }
+
+/* 꾸미기 아이템 레이어 (추후 꾸미기 기능에서 아이템 배치) */
+.decor-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* 펫 이름 배지 (무대 좌상단) */
@@ -225,45 +268,66 @@ body {
   margin-top: 1px;
 }
 
-/* ===== 돌봄 미션 플로팅 아이콘 ===== */
-.mission-fab {
+/* ===== 우측 플로팅 버튼 스택 ===== */
+.fab-stack {
   position: absolute;
   top: 14px;
   right: 14px;
-  width: 56px;
-  height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  z-index: 4;
+}
+
+.fab {
+  position: relative;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   border: 3px solid #fff;
-  background: linear-gradient(135deg, #f79b70, var(--coral));
-  box-shadow: 0 6px 18px rgba(244, 132, 95, 0.45);
   cursor: pointer;
-  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.15s, box-shadow 0.15s;
-  animation: fabPulse 2.6s ease-in-out infinite;
 }
 
-.mission-fab:hover { transform: translateY(-2px) scale(1.05); }
-.mission-fab:active { transform: scale(0.95); }
+.fab:hover { transform: translateY(-2px) scale(1.05); }
+.fab:active { transform: scale(0.95); }
+
+.fab-ico { font-size: 22px; }
+
+.fab-checkin {
+  background: linear-gradient(135deg, #7ec8ea, var(--ice-400));
+  box-shadow: 0 6px 16px rgba(95, 180, 221, 0.45);
+}
+
+.fab-mission {
+  background: linear-gradient(135deg, #f79b70, var(--coral));
+  box-shadow: 0 6px 18px rgba(244, 132, 95, 0.45);
+  animation: fabPulse 2.6s ease-in-out infinite;
+}
 
 @keyframes fabPulse {
   0%, 100% { box-shadow: 0 6px 18px rgba(244, 132, 95, 0.45); }
   50% { box-shadow: 0 6px 26px rgba(244, 132, 95, 0.7); }
 }
 
-.mission-fab.all-done {
+.fab-mission.all-done {
   background: linear-gradient(135deg, #8be0c4, var(--mint));
   animation: none;
   box-shadow: 0 6px 18px rgba(127, 216, 190, 0.5);
 }
 
-.fab-ico { font-size: 24px; }
+.fab-decor {
+  background: linear-gradient(135deg, #c9b3ec, #a58ad8);
+  box-shadow: 0 6px 16px rgba(165, 138, 216, 0.45);
+}
 
 .fab-badge {
   position: absolute;
-  bottom: -6px;
+  bottom: -7px;
   left: 50%;
   transform: translateX(-50%);
   background: var(--navy);
@@ -274,6 +338,21 @@ body {
   padding: 2px 9px;
   white-space: nowrap;
   box-shadow: 0 2px 6px rgba(30, 58, 95, 0.3);
+}
+
+.fab-label {
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--navy-soft);
+  font-family: var(--font-round);
+  font-size: 9.5px;
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(30, 58, 95, 0.15);
 }
 
 /* 말풍선 */
@@ -292,6 +371,7 @@ body {
   opacity: 1;
   transition: opacity 0.35s, transform 0.35s;
   z-index: 3;
+  max-width: 88%;
 }
 
 .bubble::after {
@@ -310,8 +390,8 @@ body {
 /* 빙글이 — 무대의 주인공, 크게 */
 .binglee-wrap {
   position: relative;
-  width: min(78%, 340px);
-  margin-bottom: 4%;
+  width: min(72%, 320px);
+  margin-bottom: 3%;
   cursor: pointer;
   z-index: 2;
   -webkit-tap-highlight-color: transparent;
@@ -321,7 +401,7 @@ body {
 
 .binglee-body-group {
   animation: bob 3.2s ease-in-out infinite;
-  transform-origin: 100px 170px;
+  transform-origin: 100px 176px;
 }
 
 @keyframes bob {
@@ -329,18 +409,18 @@ body {
   50% { transform: translateY(-6px) scaleY(1.015); }
 }
 
-.eyes { animation: blink 4.6s infinite; transform-origin: 100px 88px; }
+.eyes { animation: blink 4.6s infinite; transform-origin: 100px 108px; }
 
 @keyframes blink {
   0%, 93%, 100% { transform: scaleY(1); }
   95%, 97% { transform: scaleY(0.08); }
 }
 
-.crystal { animation: sparkle 2.8s ease-in-out infinite; transform-origin: 100px 17px; }
+.crystal { animation: sparkle 2.8s ease-in-out infinite; }
 
 @keyframes sparkle {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.75; transform: scale(1.08); }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 .binglee-wrap.happy .binglee-body-group { animation: jump 0.55s ease; }
@@ -349,6 +429,28 @@ body {
   0%, 100% { transform: translateY(0) scale(1); }
   35% { transform: translateY(-20px) scale(1.04, 0.97); }
   70% { transform: translateY(0) scale(0.98, 1.03); }
+}
+
+/* 녹는 상태 — 감정 온도가 낮을 때 */
+.binglee-wrap.melting .melt-drop {
+  opacity: 1;
+  animation: drip 2.4s ease-in infinite;
+}
+
+@keyframes drip {
+  0%, 55% { transform: translateY(0); opacity: 1; }
+  90% { transform: translateY(26px); opacity: 0.9; }
+  100% { transform: translateY(30px); opacity: 0; }
+}
+
+.binglee-wrap.melting .melt-puddle {
+  opacity: 0.8;
+  animation: puddle 3s ease-in-out infinite;
+}
+
+@keyframes puddle {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(1.06); }
 }
 
 /* 하트 이펙트 */
@@ -380,7 +482,7 @@ body {
   border-top: 2px solid rgba(255, 255, 255, 0.8);
 }
 
-/* ===== 미션 팝업 (모달) ===== */
+/* ===== 팝업 (모달) 공통 ===== */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -432,6 +534,15 @@ body {
   font-family: var(--font-round);
   font-size: 13.5px;
   color: var(--ice-400);
+  background: var(--ice-100);
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+.manual-chip {
+  font-family: var(--font-round);
+  font-size: 12px;
+  color: var(--navy-soft);
   background: var(--ice-100);
   border-radius: 999px;
   padding: 4px 12px;
@@ -519,6 +630,112 @@ body {
   padding: 4px 10px;
 }
 
+/* ===== 상태 확인 (생존 매뉴얼) ===== */
+.checkin-body { min-height: 220px; }
+
+.ice-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.ice-line .mini-ice {
+  font-size: 26px;
+  flex: none;
+  margin-top: -2px;
+}
+
+.ice-line p {
+  background: var(--card);
+  border-radius: 4px 16px 16px 16px;
+  padding: 11px 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  box-shadow: var(--shadow);
+  white-space: pre-line;
+}
+
+.q-count {
+  font-family: var(--font-round);
+  font-size: 12px;
+  color: var(--ice-400);
+  margin-bottom: 8px;
+}
+
+.likert { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+.likert button {
+  width: 100%;
+  text-align: left;
+  background: var(--card);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 12px 15px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--navy);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: border-color 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.likert button:hover { border-color: var(--ice-300); }
+.likert button:active { transform: scale(0.98); }
+
+.likert .num {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ice-100);
+  color: var(--ice-400);
+  font-family: var(--font-round);
+  font-size: 12.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.name-form { display: flex; gap: 8px; margin-top: 4px; }
+
+.name-form input {
+  flex: 1;
+  border: 2px solid var(--ice-200);
+  border-radius: 14px;
+  padding: 12px 15px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--navy);
+  background: var(--card);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.name-form input:focus { border-color: var(--ice-400); }
+
+.name-form button,
+.checkin-done-btn {
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7ec8ea, var(--ice-400));
+  color: #fff;
+  font-family: var(--font-round);
+  font-size: 14.5px;
+  padding: 12px 20px;
+  cursor: pointer;
+  box-shadow: 0 5px 14px rgba(95, 180, 221, 0.4);
+  transition: transform 0.12s;
+}
+
+.name-form button:active,
+.checkin-done-btn:active { transform: scale(0.97); }
+
+.checkin-done-btn { width: 100%; margin-top: 16px; }
+
 /* ===== 하단 내비게이션 ===== */
 .bottom-nav {
   position: fixed;
@@ -589,6 +806,8 @@ body {
   transition: opacity 0.35s, transform 0.35s;
   z-index: 40;
   pointer-events: none;
+  max-width: 88vw;
+  text-align: center;
 }
 
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -598,5 +817,5 @@ body {
 }
 
 @media (max-height: 640px) {
-  .binglee-wrap { width: min(62%, 260px); }
+  .binglee-wrap { width: min(58%, 250px); }
 }

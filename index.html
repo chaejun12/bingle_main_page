@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>빙글이 Binglee — 대리 돌봄 웰니스</title>
-<meta name="description" content="냉장고에 사는 빙글이를 돌보며 자연스럽게 번아웃을 회복하는 대리 돌봄(Proxy Care) 웰니스 앱" />
+<title>빙글이 Binglee — 행복을 만드는 얼음</title>
+<meta name="description" content="냉장고에 사는 '행복을 만드는 얼음' 빙글이를 돌보며 자연스럽게 번아웃을 회복하는 대리 돌봄(Proxy Care) 웰니스 앱" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet" />
@@ -18,11 +18,11 @@
   <header class="top-bar">
     <div class="greeting">
       <p class="date" id="today-date">7월 16일 수요일</p>
-      <h1 class="hello">좋은 아침이에요 ☀️</h1>
+      <h1 class="hello" id="hello">좋은 아침이에요 ☀️</h1>
     </div>
-    <div class="streak-chip" title="연속 돌봄일">
+    <div class="streak-chip" title="빙글이와 함께한 날">
       <span class="streak-ice">🧊</span>
-      <span id="streak-count">12</span>일
+      <span id="streak-count">12</span>일째
     </div>
   </header>
 
@@ -44,57 +44,86 @@
     </div>
   </section>
 
-  <!-- ===== 빙글이 냉장고 무대 (풀스크린) ===== -->
-  <section class="stage" aria-label="빙글이">
+  <!-- ===== 냉장고 내부 무대 (풀스크린) ===== -->
+  <section class="stage" aria-label="빙글이의 냉장고">
     <div class="fridge">
-      <div class="fridge-glow"></div>
+      <div class="fridge-light"></div>
+
+      <!-- 냉장고 내부 배경: 선반 -->
+      <div class="fridge-shelf shelf-1">
+        <span class="prop" data-slot="1">❄️</span>
+        <span class="prop" data-slot="2">🫧</span>
+      </div>
+      <div class="fridge-shelf shelf-2">
+        <span class="prop" data-slot="3">⭐</span>
+      </div>
+
+      <!-- 냉장고 꾸미기 아이템이 배치될 레이어 (추후 꾸미기 기능에서 사용) -->
+      <div class="decor-layer" id="decor-layer" aria-hidden="true"></div>
 
       <div class="pet-badge">
         <span class="name">빙글이</span>
-        <span class="lv">Lv.4 · 2주차 회복 여정</span>
+        <span class="lv">행복을 만드는 얼음 · 2주차</span>
       </div>
 
-      <!-- 돌봄 미션 플로팅 아이콘 -->
-      <button class="mission-fab" id="mission-fab" aria-label="오늘의 돌봄 미션 열기">
-        <span class="fab-ico">📋</span>
-        <span class="fab-badge" id="fab-badge">0/5</span>
-      </button>
+      <!-- 우측 플로팅 버튼들 -->
+      <div class="fab-stack">
+        <button class="fab fab-checkin" id="checkin-fab" aria-label="오늘의 상태 확인">
+          <span class="fab-ico">📝</span>
+          <span class="fab-label">상태 확인</span>
+        </button>
+        <button class="fab fab-mission" id="mission-fab" aria-label="오늘의 돌봄 미션 열기">
+          <span class="fab-ico">📋</span>
+          <span class="fab-badge" id="fab-badge">0/5</span>
+        </button>
+        <button class="fab fab-decor" id="decor-fab" aria-label="냉장고 꾸미기 (준비 중)">
+          <span class="fab-ico">🎨</span>
+          <span class="fab-label">꾸미기</span>
+        </button>
+      </div>
 
-      <div class="bubble" id="speech-bubble">오늘도 와줘서 고마워!</div>
+      <div class="bubble" id="speech-bubble">톡. 톡. 나 여기 있어!</div>
 
-      <!-- 빙글이 캐릭터 -->
+      <!-- 빙글이: 행복을 만드는 얼음 -->
       <div class="binglee-wrap" id="binglee">
-        <svg viewBox="0 0 200 190" class="binglee-svg" aria-hidden="true">
+        <svg viewBox="0 0 200 200" class="binglee-svg" aria-hidden="true">
           <!-- 그림자 -->
-          <ellipse cx="100" cy="176" rx="52" ry="9" fill="#bcd9ec" opacity="0.55"/>
+          <ellipse cx="100" cy="184" rx="54" ry="8" fill="#9ecbe4" opacity="0.5"/>
+          <!-- 녹은 물웅덩이 (melting 상태에서 표시) -->
+          <ellipse class="melt-puddle" cx="100" cy="184" rx="68" ry="9" fill="#bfe4f6" opacity="0"/>
           <g class="binglee-body-group">
-            <!-- 몸통 -->
-            <path d="M100 22 C 148 22 166 66 166 106 C 166 150 138 172 100 172 C 62 172 34 150 34 106 C 34 66 52 22 100 22 Z" fill="#aee0f5"/>
-            <!-- 배 -->
-            <path d="M100 62 C 128 62 142 88 142 116 C 142 146 124 162 100 162 C 76 162 58 146 58 116 C 58 88 72 62 100 62 Z" fill="#ffffff"/>
-            <!-- 얼음 결정 뿔 -->
-            <g class="crystal">
-              <path d="M100 4 L 107 20 L 100 30 L 93 20 Z" fill="#7ec8ea"/>
-              <path d="M100 8 L 104 19 L 100 26 L 96 19 Z" fill="#c9ecfb"/>
-            </g>
             <!-- 팔 -->
-            <path class="arm arm-l" d="M40 104 C 26 110 22 122 28 132 C 36 128 44 120 48 112 Z" fill="#8fd2ef"/>
-            <path class="arm arm-r" d="M160 104 C 174 110 178 122 172 132 C 164 128 156 120 152 112 Z" fill="#8fd2ef"/>
-            <!-- 눈 -->
+            <ellipse class="arm arm-l" cx="34" cy="118" rx="12" ry="9" fill="#9ddbf5" transform="rotate(-24 34 118)"/>
+            <ellipse class="arm arm-r" cx="166" cy="118" rx="12" ry="9" fill="#9ddbf5" transform="rotate(24 166 118)"/>
+            <!-- 얼음 큐브 몸통 -->
+            <rect x="40" y="46" width="120" height="130" rx="34" fill="#b9e5f8"/>
+            <rect x="47" y="53" width="106" height="116" rx="28" fill="#c8ecfa"/>
+            <!-- 유리 반짝임 -->
+            <path d="M62 66 Q 60 64 64 60 L 84 42 Q 88 40 90 44 Z" fill="#ffffff" opacity="0.55" transform="translate(0 14)"/>
+            <rect x="56" y="62" width="10" height="34" rx="5" fill="#ffffff" opacity="0.65" transform="rotate(38 61 79)"/>
+            <rect x="74" y="56" width="7" height="20" rx="3.5" fill="#ffffff" opacity="0.5" transform="rotate(38 77 66)"/>
+            <!-- 반짝이 -->
+            <g class="crystal">
+              <path d="M152 40 L 155 47 L 162 50 L 155 53 L 152 60 L 149 53 L 142 50 L 149 47 Z" fill="#ffffff" opacity="0.9"/>
+              <path d="M40 34 L 42 39 L 47 41 L 42 43 L 40 48 L 38 43 L 33 41 L 38 39 Z" fill="#ffffff" opacity="0.7"/>
+            </g>
+            <!-- 눈: 둥근 눈 -->
             <g class="eyes">
-              <circle class="eye" cx="76" cy="88" r="7" fill="#233a54"/>
-              <circle class="eye" cx="124" cy="88" r="7" fill="#233a54"/>
-              <circle cx="78.5" cy="85.5" r="2.4" fill="#fff"/>
-              <circle cx="126.5" cy="85.5" r="2.4" fill="#fff"/>
+              <circle class="eye" cx="78" cy="108" r="7.5" fill="#233a54"/>
+              <circle class="eye" cx="122" cy="108" r="7.5" fill="#233a54"/>
+              <circle cx="80.5" cy="105.5" r="2.6" fill="#fff"/>
+              <circle cx="124.5" cy="105.5" r="2.6" fill="#fff"/>
             </g>
             <!-- 볼터치 -->
-            <ellipse cx="62" cy="104" rx="9" ry="6" fill="#ffb5a3" opacity="0.8"/>
-            <ellipse cx="138" cy="104" rx="9" ry="6" fill="#ffb5a3" opacity="0.8"/>
-            <!-- 입 -->
-            <path class="mouth" d="M92 106 Q 100 114 108 106" stroke="#233a54" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+            <ellipse cx="63" cy="124" rx="9" ry="6" fill="#ffb5a3" opacity="0.75"/>
+            <ellipse cx="137" cy="124" rx="9" ry="6" fill="#ffb5a3" opacity="0.75"/>
+            <!-- 앙증맞은 입 -->
+            <path class="mouth" d="M93 124 Q 100 131 107 124" stroke="#233a54" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+            <!-- 녹아 흐르는 물방울 (melting 상태에서 표시) -->
+            <path class="melt-drop" d="M156 142 q 5 7 0 11 q -5 -4 0 -11" fill="#7ec8ea" opacity="0"/>
             <!-- 발 -->
-            <ellipse cx="78" cy="170" rx="14" ry="7" fill="#8fd2ef"/>
-            <ellipse cx="122" cy="170" rx="14" ry="7" fill="#8fd2ef"/>
+            <ellipse cx="76" cy="177" rx="15" ry="7" fill="#9ddbf5"/>
+            <ellipse cx="124" cy="177" rx="15" ry="7" fill="#9ddbf5"/>
           </g>
         </svg>
         <div class="hearts" id="hearts"></div>
@@ -171,6 +200,19 @@
         <span class="m-temp">+6°C</span>
       </li>
     </ul>
+  </div>
+</div>
+
+<!-- ===== 오늘의 상태 확인 팝업 (빙글이의 생존 매뉴얼) ===== -->
+<div class="modal-overlay hidden" id="checkin-modal" role="dialog" aria-modal="true" aria-labelledby="checkin-modal-title">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="checkin-modal-title">오늘의 상태 확인</h2>
+      <span class="manual-chip">📜 생존 매뉴얼</span>
+      <button class="modal-close" id="checkin-close" aria-label="닫기">✕</button>
+    </div>
+    <!-- 단계별 내용은 JS가 렌더링 -->
+    <div class="checkin-body" id="checkin-body"></div>
   </div>
 </div>
 
