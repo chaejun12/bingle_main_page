@@ -26,7 +26,7 @@
     </div>
   </header>
 
-  <!-- ===== 감정 온도 지수 ===== -->
+  <!-- ===== 감정 온도 지수 (컴팩트) ===== -->
   <section class="temp-card" aria-label="감정 온도 지수">
     <div class="temp-head">
       <span class="temp-label">감정 온도 지수</span>
@@ -40,20 +40,25 @@
     </div>
     <div class="temp-scale">
       <span>12°C · 소진</span>
-      <span>회복 진행</span>
       <span>100°C · 회복</span>
     </div>
   </section>
 
-  <!-- ===== 빙글이 냉장고 무대 ===== -->
+  <!-- ===== 빙글이 냉장고 무대 (풀스크린) ===== -->
   <section class="stage" aria-label="빙글이">
     <div class="fridge">
       <div class="fridge-glow"></div>
-      <div class="shelf shelf-top">
-        <span class="shelf-item" data-food="🥕">🥕</span>
-        <span class="shelf-item" data-food="🫐">🫐</span>
-        <span class="shelf-item" data-food="🍯">🍯</span>
+
+      <div class="pet-badge">
+        <span class="name">빙글이</span>
+        <span class="lv">Lv.4 · 2주차 회복 여정</span>
       </div>
+
+      <!-- 돌봄 미션 플로팅 아이콘 -->
+      <button class="mission-fab" id="mission-fab" aria-label="오늘의 돌봄 미션 열기">
+        <span class="fab-ico">📋</span>
+        <span class="fab-badge" id="fab-badge">0/5</span>
+      </button>
 
       <div class="bubble" id="speech-bubble">오늘도 와줘서 고마워!</div>
 
@@ -97,21 +102,26 @@
 
       <div class="fridge-floor"></div>
     </div>
-
-    <div class="pet-status">
-      <div class="pet-name">
-        <span class="name">빙글이</span>
-        <span class="lv">Lv.4 · 2주차 회복 여정</span>
-      </div>
-      <button class="feed-btn" id="feed-btn">🥣 치유 식재료 주기</button>
-    </div>
   </section>
 
-  <!-- ===== 오늘의 돌봄 미션 ===== -->
-  <section class="missions" aria-label="오늘의 돌봄 미션">
-    <div class="missions-head">
-      <h2>오늘의 돌봄 미션</h2>
+  <!-- ===== 하단 내비게이션 ===== -->
+  <nav class="bottom-nav" aria-label="메인 내비게이션">
+    <button class="nav-item active"><span class="nav-ico">🏠</span><span>홈</span></button>
+    <button class="nav-item"><span class="nav-ico">🧊</span><span>냉장고</span></button>
+    <button class="nav-item nav-walk"><span class="nav-ico walk-ico">🚶</span><span>산책</span></button>
+    <button class="nav-item"><span class="nav-ico">🫧</span><span>얼음동굴</span></button>
+    <button class="nav-item"><span class="nav-ico">📊</span><span>기록</span></button>
+  </nav>
+
+</div>
+
+<!-- ===== 오늘의 돌봄 미션 팝업 ===== -->
+<div class="modal-overlay hidden" id="mission-modal" role="dialog" aria-modal="true" aria-labelledby="mission-modal-title">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="mission-modal-title">오늘의 돌봄 미션</h2>
       <span class="missions-progress" id="missions-progress">0 / 5</span>
+      <button class="modal-close" id="modal-close" aria-label="닫기">✕</button>
     </div>
 
     <ul class="mission-list" id="mission-list">
@@ -161,26 +171,7 @@
         <span class="m-temp">+6°C</span>
       </li>
     </ul>
-  </section>
-
-  <!-- ===== 얼음동굴 커뮤니티 배너 ===== -->
-  <section class="cave-banner">
-    <div class="cave-text">
-      <p class="cave-title">🫧 얼음동굴</p>
-      <p class="cave-sub">친구의 빙글이에게 응원 보내기 · 새 소식 3</p>
-    </div>
-    <span class="cave-arrow">›</span>
-  </section>
-
-  <!-- ===== 하단 내비게이션 ===== -->
-  <nav class="bottom-nav" aria-label="메인 내비게이션">
-    <button class="nav-item active"><span class="nav-ico">🏠</span><span>홈</span></button>
-    <button class="nav-item"><span class="nav-ico">🧊</span><span>냉장고</span></button>
-    <button class="nav-item nav-walk"><span class="nav-ico walk-ico">🚶</span><span>산책</span></button>
-    <button class="nav-item"><span class="nav-ico">🫧</span><span>얼음동굴</span></button>
-    <button class="nav-item"><span class="nav-ico">📊</span><span>기록</span></button>
-  </nav>
-
+  </div>
 </div>
 
 <script src="js/app.js"></script>

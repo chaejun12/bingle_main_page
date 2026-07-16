@@ -1,6 +1,6 @@
 /* ============================================
    빙글이 Binglee — 메인 인터페이스 로직
-   감정 온도 지수 · 돌봄 미션 · 캐릭터 반응
+   감정 온도 지수 · 돌봄 미션 팝업 · 캐릭터 반응
    ============================================ */
 
 const TEMP_MIN = 12;   // 소진
@@ -22,6 +22,9 @@ const bubble = $('#speech-bubble');
 const binglee = $('#binglee');
 const hearts = $('#hearts');
 const progressEl = $('#missions-progress');
+const fabBadge = $('#fab-badge');
+const missionFab = $('#mission-fab');
+const missionModal = $('#mission-modal');
 
 /* ---------- 날짜 표기 ---------- */
 (function setDate() {
@@ -111,33 +114,25 @@ binglee.addEventListener('click', () => {
   reactHappy();
 });
 
-/* ---------- 치유 식재료 주기 ---------- */
-const foods = ['🥕', '🫐', '🍯', '🍎', '🥦', '🍵'];
+/* ---------- 돌봄 미션 팝업 열기/닫기 ---------- */
+function openMissions() {
+  missionModal.classList.remove('hidden');
+}
 
-$('#feed-btn').addEventListener('click', () => {
-  const fridge = $('.fridge');
-  const food = document.createElement('span');
-  food.className = 'food-fly';
-  food.textContent = foods[Math.floor(Math.random() * foods.length)];
-  food.style.right = '30px';
-  food.style.top = '30px';
-  food.style.setProperty('--fly-x', '-' + (60 + Math.random() * 60) + 'px');
-  food.style.setProperty('--fly-y', 100 + Math.random() * 40 + 'px');
-  fridge.appendChild(food);
+function closeMissions() {
+  missionModal.classList.add('hidden');
+}
 
-  setTimeout(() => {
-    food.remove();
-    reactHappy();
-    raiseTemp(2);
-  }, 650);
+missionFab.addEventListener('click', openMissions);
+$('#modal-close').addEventListener('click', closeMissions);
+
+// 오버레이(팝업 바깥) 클릭 시 닫기
+missionModal.addEventListener('click', (e) => {
+  if (e.target === missionModal) closeMissions();
 });
 
-// 선반 재료 클릭도 먹이기로
-document.querySelectorAll('.shelf-item').forEach((item) => {
-  item.addEventListener('click', () => {
-    reactHappy();
-    raiseTemp(1);
-  });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeMissions();
 });
 
 /* ---------- 돌봄 미션 체크 ---------- */
@@ -153,18 +148,26 @@ function showToast(text) {
   setTimeout(() => toast.classList.remove('show'), 2400);
 }
 
+function renderProgress() {
+  progressEl.textContent = `${state.done} / ${state.total}`;
+  fabBadge.textContent = `${state.done}/${state.total}`;
+  if (state.done === state.total) missionFab.classList.add('all-done');
+}
+
 document.querySelectorAll('.mission').forEach((mission) => {
   mission.querySelector('.check').addEventListener('click', () => {
     if (mission.classList.contains('done')) return;
 
     mission.classList.add('done');
     state.done += 1;
-    progressEl.textContent = `${state.done} / ${state.total}`;
+    renderProgress();
 
     raiseTemp(Number(mission.dataset.temp) || 5);
     reactHappy();
 
     if (state.done === state.total) {
+      // 완료를 캐릭터와 함께 축하할 수 있도록 팝업을 닫는다
+      setTimeout(closeMissions, 550);
       showToast('🎉 오늘의 돌봄 미션 완료! 빙글이가 한층 따뜻해졌어요');
       say('오늘 미션 전부 완료!! 정말 최고야 🩵', 4000);
       popHearts(7);
@@ -174,4 +177,4 @@ document.querySelectorAll('.mission').forEach((mission) => {
 
 /* ---------- 초기 렌더 ---------- */
 renderTemp();
-progressEl.textContent = `0 / ${state.total}`;
+renderProgress();
