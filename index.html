@@ -51,7 +51,8 @@
 
     <!-- ===== 냉장고 내부 무대 (풀스크린) ===== -->
     <section class="stage" aria-label="빙글이의 냉장고">
-      <div class="fridge">
+      <div class="fridge" id="fridge">
+        <div class="wall-tex-layer" id="wall-tex-layer" aria-hidden="true"></div>
         <div class="fridge-light"></div>
 
         <!-- 냉장고 내부 배경: 선반 -->
@@ -81,7 +82,7 @@
             <span class="fab-ico">📋</span>
             <span class="fab-badge" id="fab-badge">0/5</span>
           </button>
-          <button class="fab fab-decor" id="decor-fab" aria-label="냉장고 꾸미기 (준비 중)">
+          <button class="fab fab-decor" id="decor-fab" aria-label="냉장고 꾸미기">
             <span class="fab-ico">🎨</span>
             <span class="fab-label">꾸미기</span>
           </button>
@@ -98,7 +99,7 @@
           <div class="hearts" id="hearts"></div>
         </div>
 
-        <div class="fridge-floor"></div>
+        <div class="fridge-floor" id="fridge-floor"></div>
       </div>
     </section>
 
@@ -227,6 +228,17 @@
 <!-- ===== V-log 플레이어 (셋로그 스타일) — 내용은 JS가 렌더링 ===== -->
 <div class="vlog-overlay hidden" id="vlog-modal" role="dialog" aria-modal="true">
   <div class="vlog-frame" id="vlog-frame"></div>
+</div>
+
+<!-- ===== 냉장고 꾸미기 팝업 (바닥 · 벽 선택) — 내용은 JS가 렌더링 ===== -->
+<div class="modal-overlay hidden" id="decor-modal" role="dialog" aria-modal="true" aria-labelledby="decor-modal-title">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="decor-modal-title">🎨 냉장고 꾸미기</h2>
+      <button class="modal-close" id="decor-close" aria-label="닫기">✕</button>
+    </div>
+    <div id="decor-body"></div>
+  </div>
 </div>
 
 <script src="js/app.js"></script>

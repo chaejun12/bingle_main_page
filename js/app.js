@@ -349,11 +349,118 @@ function startCheckin() {
 checkinFab.addEventListener('click', startCheckin);
 $('#checkin-close').addEventListener('click', () => closeModal(checkinModal));
 
-/* ---------- 냉장고 꾸미기 (추후 기능) ---------- */
+/* ============================================
+   냉장고 꾸미기 — 바닥 · 벽 테마를 독립적으로 선택
+   ============================================ */
+
+const DECOR_THEMES = [
+  { id: 'ice',   label: '얼음' },
+  { id: 'snow',  label: '포근한 눈' },
+  { id: 'mint',  label: '민트 힐링' },
+  { id: 'berry', label: '베리 라벤더' },
+  { id: 'wood',  label: '코지 우드' },
+  { id: 'slate', label: '동굴 슬레이트' },
+];
+
+const decorState = {
+  wall: localStorage.getItem('bingle_decor_wall') || '',
+  floor: localStorage.getItem('bingle_decor_floor') || '',
+};
+
+const wallLayer = $('#wall-tex-layer');
+const floorLayer = $('#fridge-floor');
+const decorModal = $('#decor-modal');
+const decorBody = $('#decor-body');
+
+function tileUrl(kind, id) {
+  return `assets/decor/${kind}/${id}.svg`;
+}
+
+/* 저장된 선택을 실제 냉장고 배경에 반영. 미선택 시 기존 기본 그라데이션 유지 */
+function applyDecor() {
+  if (decorState.wall) {
+    wallLayer.style.backgroundImage = `url(${tileUrl('walls', decorState.wall)})`;
+    wallLayer.style.backgroundSize = '48px 48px';
+  } else {
+    wallLayer.style.backgroundImage = 'none';
+  }
+  if (decorState.floor) {
+    floorLayer.style.backgroundImage = `url(${tileUrl('floors', decorState.floor)})`;
+    floorLayer.style.backgroundSize = '24px 24px';
+  } else {
+    floorLayer.style.backgroundImage = '';
+  }
+}
+
+function setDecor(kind, id) {
+  decorState[kind] = id;
+  localStorage.setItem(kind === 'wall' ? 'bingle_decor_wall' : 'bingle_decor_floor', id);
+  applyDecor();
+  renderDecorBody();
+}
+
+function decorSwatchesHTML(kind) {
+  const folder = kind === 'wall' ? 'walls' : 'floors';
+  return `<div class="decor-grid">${DECOR_THEMES.map((t) => {
+    const selected = decorState[kind] === t.id;
+    return `<button class="decor-swatch ${selected ? 'selected' : ''}" data-kind="${kind}" data-id="${t.id}">
+      <span class="swatch-tile" style="background-image:url(${tileUrl(folder, t.id)})"></span>
+      <span class="swatch-label">${t.label}</span>
+      <span class="swatch-check">✓ 적용중</span>
+    </button>`;
+  }).join('')}</div>`;
+}
+
+function renderDecorBody() {
+  const wallId = decorState.wall || 'ice';
+  const floorId = decorState.floor || 'ice';
+  decorBody.innerHTML = `
+    <div class="decor-preview">
+      <div class="dp-box">
+        <span class="dp-wall" style="background-image:url(${tileUrl('walls', wallId)})"></span>
+        <span class="dp-floor" style="background-image:url(${tileUrl('floors', floorId)});background-size:16px 16px"></span>
+      </div>
+      <p>벽과 바닥을 자유롭게 조합해서<br>빙글이의 냉장고를 꾸며봐!</p>
+    </div>
+    <button class="decor-reset-btn" id="decor-reset">↺ 기본값으로</button>
+    <div class="decor-section">
+      <p class="decor-section-title">🧱 벽 테마</p>
+      ${decorSwatchesHTML('wall')}
+    </div>
+    <div class="decor-section">
+      <p class="decor-section-title">🀄 바닥 테마</p>
+      ${decorSwatchesHTML('floor')}
+    </div>`;
+
+  decorBody.querySelectorAll('.decor-swatch').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      setDecor(btn.dataset.kind, btn.dataset.id);
+      showToast(`🎨 ${btn.dataset.kind === 'wall' ? '벽' : '바닥'}이 바뀌었어!`);
+    });
+  });
+
+  $('#decor-reset').addEventListener('click', () => {
+    decorState.wall = '';
+    decorState.floor = '';
+    localStorage.removeItem('bingle_decor_wall');
+    localStorage.removeItem('bingle_decor_floor');
+    applyDecor();
+    renderDecorBody();
+    showToast('↺ 기본 냉장고로 되돌렸어');
+  });
+}
+
 $('#decor-fab').addEventListener('click', () => {
-  showToast('🎨 냉장고 꾸미기는 준비 중이야! 조금만 기다려줘');
-  say('여기 곧 예쁘게 꾸밀 수 있대. 기대돼!', 3000);
+  renderDecorBody();
+  openModal(decorModal);
 });
+$('#decor-close').addEventListener('click', () => closeModal(decorModal));
+decorModal.addEventListener('click', (e) => {
+  if (e.target === decorModal) closeModal(decorModal);
+});
+
+// 저장된 꾸미기 테마 복원 (앱 시작 시 1회)
+applyDecor();
 
 /* ============================================
    얼음동굴 마을 — 친구 커뮤니티
@@ -758,6 +865,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closeModal(caveModal);
     closeModal(letterModal);
+    closeModal(decorModal);
     closeVlog();
   }
 });
