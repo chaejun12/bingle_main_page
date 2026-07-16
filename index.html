@@ -14,132 +14,164 @@
 
 <div class="phone">
 
-  <!-- ===== 상단 헤더 ===== -->
-  <header class="top-bar">
-    <div class="greeting">
-      <p class="date" id="today-date">7월 16일 수요일</p>
-      <h1 class="hello" id="hello">좋은 아침이에요 ☀️</h1>
-    </div>
-    <div class="streak-chip" title="빙글이와 함께한 날">
-      <span class="streak-ice">🧊</span>
-      <span id="streak-count">12</span>일째
-    </div>
-  </header>
+  <!-- ==================== 홈 뷰 ==================== -->
+  <div class="view" id="view-home">
 
-  <!-- ===== 감정 온도 지수 (컴팩트) ===== -->
-  <section class="temp-card" aria-label="감정 온도 지수">
-    <div class="temp-head">
-      <span class="temp-label">감정 온도 지수</span>
-      <span class="temp-value"><b id="temp-now">36</b>°C</span>
-    </div>
-    <div class="temp-track">
-      <div class="temp-fill" id="temp-fill"></div>
-      <div class="temp-marker" id="temp-marker">
-        <span class="temp-marker-dot"></span>
+    <!-- ===== 상단 헤더 ===== -->
+    <header class="top-bar">
+      <div class="greeting">
+        <p class="date" id="today-date">7월 16일 수요일</p>
+        <h1 class="hello" id="hello">좋은 아침이에요 ☀️</h1>
       </div>
-    </div>
-    <div class="temp-scale">
-      <span>12°C · 소진</span>
-      <span>100°C · 회복</span>
-    </div>
-  </section>
-
-  <!-- ===== 냉장고 내부 무대 (풀스크린) ===== -->
-  <section class="stage" aria-label="빙글이의 냉장고">
-    <div class="fridge">
-      <div class="fridge-light"></div>
-
-      <!-- 냉장고 내부 배경: 선반 -->
-      <div class="fridge-shelf shelf-1">
-        <span class="prop" data-slot="1">❄️</span>
-        <span class="prop" data-slot="2">🫧</span>
+      <div class="streak-chip" title="빙글이와 함께한 날">
+        <span class="streak-ice">🧊</span>
+        <span id="streak-count">12</span>일째
       </div>
-      <div class="fridge-shelf shelf-2">
-        <span class="prop" data-slot="3">⭐</span>
+    </header>
+
+    <!-- ===== 감정 온도 지수 (컴팩트) ===== -->
+    <section class="temp-card" aria-label="감정 온도 지수">
+      <div class="temp-head">
+        <span class="temp-label">감정 온도 지수</span>
+        <span class="temp-value"><b id="temp-now">36</b>°C</span>
       </div>
-
-      <!-- 냉장고 꾸미기 아이템이 배치될 레이어 (추후 꾸미기 기능에서 사용) -->
-      <div class="decor-layer" id="decor-layer" aria-hidden="true"></div>
-
-      <div class="pet-badge">
-        <span class="name">빙글이</span>
-        <span class="lv">행복을 만드는 얼음 · 2주차</span>
+      <div class="temp-track">
+        <div class="temp-fill" id="temp-fill"></div>
+        <div class="temp-marker" id="temp-marker">
+          <span class="temp-marker-dot"></span>
+        </div>
       </div>
-
-      <!-- 우측 플로팅 버튼들 -->
-      <div class="fab-stack">
-        <button class="fab fab-checkin" id="checkin-fab" aria-label="오늘의 상태 확인">
-          <span class="fab-ico">📝</span>
-          <span class="fab-label">상태 확인</span>
-        </button>
-        <button class="fab fab-mission" id="mission-fab" aria-label="오늘의 돌봄 미션 열기">
-          <span class="fab-ico">📋</span>
-          <span class="fab-badge" id="fab-badge">0/5</span>
-        </button>
-        <button class="fab fab-decor" id="decor-fab" aria-label="냉장고 꾸미기 (준비 중)">
-          <span class="fab-ico">🎨</span>
-          <span class="fab-label">꾸미기</span>
-        </button>
+      <div class="temp-scale">
+        <span>12°C · 소진</span>
+        <span>100°C · 회복</span>
       </div>
+    </section>
 
-      <div class="bubble" id="speech-bubble">톡. 톡. 나 여기 있어!</div>
+    <!-- ===== 냉장고 내부 무대 (풀스크린) ===== -->
+    <section class="stage" aria-label="빙글이의 냉장고">
+      <div class="fridge">
+        <div class="fridge-light"></div>
 
-      <!-- 빙글이: 행복을 만드는 얼음 -->
-      <div class="binglee-wrap" id="binglee">
-        <svg viewBox="0 0 200 200" class="binglee-svg" aria-hidden="true">
-          <!-- 그림자 -->
-          <ellipse cx="100" cy="184" rx="54" ry="8" fill="#9ecbe4" opacity="0.5"/>
-          <!-- 녹은 물웅덩이 (melting 상태에서 표시) -->
-          <ellipse class="melt-puddle" cx="100" cy="184" rx="68" ry="9" fill="#bfe4f6" opacity="0"/>
-          <g class="binglee-body-group">
-            <!-- 팔 -->
-            <ellipse class="arm arm-l" cx="34" cy="118" rx="12" ry="9" fill="#9ddbf5" transform="rotate(-24 34 118)"/>
-            <ellipse class="arm arm-r" cx="166" cy="118" rx="12" ry="9" fill="#9ddbf5" transform="rotate(24 166 118)"/>
-            <!-- 얼음 큐브 몸통 -->
-            <rect x="40" y="46" width="120" height="130" rx="34" fill="#b9e5f8"/>
-            <rect x="47" y="53" width="106" height="116" rx="28" fill="#c8ecfa"/>
-            <!-- 유리 반짝임 -->
-            <path d="M62 66 Q 60 64 64 60 L 84 42 Q 88 40 90 44 Z" fill="#ffffff" opacity="0.55" transform="translate(0 14)"/>
-            <rect x="56" y="62" width="10" height="34" rx="5" fill="#ffffff" opacity="0.65" transform="rotate(38 61 79)"/>
-            <rect x="74" y="56" width="7" height="20" rx="3.5" fill="#ffffff" opacity="0.5" transform="rotate(38 77 66)"/>
-            <!-- 반짝이 -->
-            <g class="crystal">
-              <path d="M152 40 L 155 47 L 162 50 L 155 53 L 152 60 L 149 53 L 142 50 L 149 47 Z" fill="#ffffff" opacity="0.9"/>
-              <path d="M40 34 L 42 39 L 47 41 L 42 43 L 40 48 L 38 43 L 33 41 L 38 39 Z" fill="#ffffff" opacity="0.7"/>
+        <!-- 냉장고 내부 배경: 선반 -->
+        <div class="fridge-shelf shelf-1">
+          <span class="prop" data-slot="1">❄️</span>
+          <span class="prop" data-slot="2">🫧</span>
+        </div>
+        <div class="fridge-shelf shelf-2">
+          <span class="prop" data-slot="3">⭐</span>
+        </div>
+
+        <!-- 냉장고 꾸미기 아이템이 배치될 레이어 (추후 꾸미기 기능에서 사용) -->
+        <div class="decor-layer" id="decor-layer" aria-hidden="true"></div>
+
+        <div class="pet-badge">
+          <span class="name">빙글이</span>
+          <span class="lv">행복을 만드는 얼음 · 2주차</span>
+        </div>
+
+        <!-- 우측 플로팅 버튼들 -->
+        <div class="fab-stack">
+          <button class="fab fab-checkin" id="checkin-fab" aria-label="오늘의 상태 확인">
+            <span class="fab-ico">📝</span>
+            <span class="fab-label">상태 확인</span>
+          </button>
+          <button class="fab fab-mission" id="mission-fab" aria-label="오늘의 돌봄 미션 열기">
+            <span class="fab-ico">📋</span>
+            <span class="fab-badge" id="fab-badge">0/5</span>
+          </button>
+          <button class="fab fab-decor" id="decor-fab" aria-label="냉장고 꾸미기 (준비 중)">
+            <span class="fab-ico">🎨</span>
+            <span class="fab-label">꾸미기</span>
+          </button>
+        </div>
+
+        <div class="bubble" id="speech-bubble">톡. 톡. 나 여기 있어!</div>
+
+        <!-- 빙글이: 행복을 만드는 얼음 -->
+        <div class="binglee-wrap" id="binglee">
+          <svg viewBox="0 0 200 200" class="binglee-svg" aria-hidden="true">
+            <!-- 그림자 -->
+            <ellipse cx="100" cy="184" rx="54" ry="8" fill="#9ecbe4" opacity="0.5"/>
+            <!-- 녹은 물웅덩이 (melting 상태에서 표시) -->
+            <ellipse class="melt-puddle" cx="100" cy="184" rx="68" ry="9" fill="#bfe4f6" opacity="0"/>
+            <g class="binglee-body-group">
+              <!-- 팔 -->
+              <ellipse class="arm arm-l" cx="34" cy="118" rx="12" ry="9" fill="#9ddbf5" transform="rotate(-24 34 118)"/>
+              <ellipse class="arm arm-r" cx="166" cy="118" rx="12" ry="9" fill="#9ddbf5" transform="rotate(24 166 118)"/>
+              <!-- 얼음 큐브 몸통 -->
+              <rect x="40" y="46" width="120" height="130" rx="34" fill="#b9e5f8"/>
+              <rect x="47" y="53" width="106" height="116" rx="28" fill="#c8ecfa"/>
+              <!-- 유리 반짝임 -->
+              <path d="M62 66 Q 60 64 64 60 L 84 42 Q 88 40 90 44 Z" fill="#ffffff" opacity="0.55" transform="translate(0 14)"/>
+              <rect x="56" y="62" width="10" height="34" rx="5" fill="#ffffff" opacity="0.65" transform="rotate(38 61 79)"/>
+              <rect x="74" y="56" width="7" height="20" rx="3.5" fill="#ffffff" opacity="0.5" transform="rotate(38 77 66)"/>
+              <!-- 반짝이 -->
+              <g class="crystal">
+                <path d="M152 40 L 155 47 L 162 50 L 155 53 L 152 60 L 149 53 L 142 50 L 149 47 Z" fill="#ffffff" opacity="0.9"/>
+                <path d="M40 34 L 42 39 L 47 41 L 42 43 L 40 48 L 38 43 L 33 41 L 38 39 Z" fill="#ffffff" opacity="0.7"/>
+              </g>
+              <!-- 눈: 둥근 눈 -->
+              <g class="eyes">
+                <circle class="eye" cx="78" cy="108" r="7.5" fill="#233a54"/>
+                <circle class="eye" cx="122" cy="108" r="7.5" fill="#233a54"/>
+                <circle cx="80.5" cy="105.5" r="2.6" fill="#fff"/>
+                <circle cx="124.5" cy="105.5" r="2.6" fill="#fff"/>
+              </g>
+              <!-- 볼터치 -->
+              <ellipse cx="63" cy="124" rx="9" ry="6" fill="#ffb5a3" opacity="0.75"/>
+              <ellipse cx="137" cy="124" rx="9" ry="6" fill="#ffb5a3" opacity="0.75"/>
+              <!-- 앙증맞은 입 -->
+              <path class="mouth" d="M93 124 Q 100 131 107 124" stroke="#233a54" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+              <!-- 녹아 흐르는 물방울 (melting 상태에서 표시) -->
+              <path class="melt-drop" d="M156 142 q 5 7 0 11 q -5 -4 0 -11" fill="#7ec8ea" opacity="0"/>
+              <!-- 발 -->
+              <ellipse cx="76" cy="177" rx="15" ry="7" fill="#9ddbf5"/>
+              <ellipse cx="124" cy="177" rx="15" ry="7" fill="#9ddbf5"/>
             </g>
-            <!-- 눈: 둥근 눈 -->
-            <g class="eyes">
-              <circle class="eye" cx="78" cy="108" r="7.5" fill="#233a54"/>
-              <circle class="eye" cx="122" cy="108" r="7.5" fill="#233a54"/>
-              <circle cx="80.5" cy="105.5" r="2.6" fill="#fff"/>
-              <circle cx="124.5" cy="105.5" r="2.6" fill="#fff"/>
-            </g>
-            <!-- 볼터치 -->
-            <ellipse cx="63" cy="124" rx="9" ry="6" fill="#ffb5a3" opacity="0.75"/>
-            <ellipse cx="137" cy="124" rx="9" ry="6" fill="#ffb5a3" opacity="0.75"/>
-            <!-- 앙증맞은 입 -->
-            <path class="mouth" d="M93 124 Q 100 131 107 124" stroke="#233a54" stroke-width="3.4" stroke-linecap="round" fill="none"/>
-            <!-- 녹아 흐르는 물방울 (melting 상태에서 표시) -->
-            <path class="melt-drop" d="M156 142 q 5 7 0 11 q -5 -4 0 -11" fill="#7ec8ea" opacity="0"/>
-            <!-- 발 -->
-            <ellipse cx="76" cy="177" rx="15" ry="7" fill="#9ddbf5"/>
-            <ellipse cx="124" cy="177" rx="15" ry="7" fill="#9ddbf5"/>
-          </g>
-        </svg>
-        <div class="hearts" id="hearts"></div>
-      </div>
+          </svg>
+          <div class="hearts" id="hearts"></div>
+        </div>
 
-      <div class="fridge-floor"></div>
+        <div class="fridge-floor"></div>
+      </div>
+    </section>
+
+  </div><!-- /view-home -->
+
+  <!-- ==================== 얼음동굴 마을 뷰 ==================== -->
+  <div class="view hidden" id="view-cave">
+
+    <header class="top-bar">
+      <div class="greeting">
+        <p class="date">친구들의 빙글이가 사는 곳</p>
+        <h1 class="hello">🫧 얼음동굴 마을</h1>
+      </div>
+      <div class="streak-chip" title="받은 편지">
+        📮 <span id="mail-count">2</span>
+      </div>
+    </header>
+
+    <!-- 마을 풍경: 동굴들은 JS가 렌더링 -->
+    <section class="village" id="village" aria-label="얼음동굴 마을">
+      <div class="aurora"></div>
+      <div class="village-snow"></div>
+    </section>
+
+    <!-- 마을 하단 액션 -->
+    <div class="village-actions">
+      <button class="village-btn vlog-btn" id="open-vlog">🎬 오늘의 V-log 모아보기</button>
+      <button class="village-btn letter-btn" id="open-letter">💌 편지 쓰기</button>
     </div>
-  </section>
+
+  </div><!-- /view-cave -->
 
   <!-- ===== 하단 내비게이션 ===== -->
   <nav class="bottom-nav" aria-label="메인 내비게이션">
-    <button class="nav-item active"><span class="nav-ico">🏠</span><span>홈</span></button>
-    <button class="nav-item"><span class="nav-ico">🧊</span><span>냉장고</span></button>
-    <button class="nav-item nav-walk"><span class="nav-ico walk-ico">🚶</span><span>산책</span></button>
-    <button class="nav-item"><span class="nav-ico">🫧</span><span>얼음동굴</span></button>
-    <button class="nav-item"><span class="nav-ico">📊</span><span>기록</span></button>
+    <button class="nav-item active" data-view="home"><span class="nav-ico">🏠</span><span>홈</span></button>
+    <button class="nav-item" data-view="fridge"><span class="nav-ico">🧊</span><span>냉장고</span></button>
+    <button class="nav-item nav-walk" data-view="walk"><span class="nav-ico walk-ico">🚶</span><span>산책</span></button>
+    <button class="nav-item" data-view="cave"><span class="nav-ico">🫧</span><span>얼음동굴</span></button>
+    <button class="nav-item" data-view="log"><span class="nav-ico">📊</span><span>기록</span></button>
   </nav>
 
 </div>
@@ -214,6 +246,21 @@
     <!-- 단계별 내용은 JS가 렌더링 -->
     <div class="checkin-body" id="checkin-body"></div>
   </div>
+</div>
+
+<!-- ===== 동굴 방문 팝업 (친구/내 동굴) — 내용은 JS가 렌더링 ===== -->
+<div class="modal-overlay hidden" id="cave-modal" role="dialog" aria-modal="true">
+  <div class="modal" id="cave-modal-body"></div>
+</div>
+
+<!-- ===== 편지 쓰기 팝업 — 내용은 JS가 렌더링 ===== -->
+<div class="modal-overlay hidden" id="letter-modal" role="dialog" aria-modal="true">
+  <div class="modal" id="letter-modal-body"></div>
+</div>
+
+<!-- ===== V-log 플레이어 (셋로그 스타일) — 내용은 JS가 렌더링 ===== -->
+<div class="vlog-overlay hidden" id="vlog-modal" role="dialog" aria-modal="true">
+  <div class="vlog-frame" id="vlog-frame"></div>
 </div>
 
 <script src="js/app.js"></script>
