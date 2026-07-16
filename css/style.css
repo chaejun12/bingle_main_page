@@ -415,7 +415,7 @@ body {
 /* 빙글이 — 무대의 주인공, 크게 (픽셀 스프라이트) */
 .binglee-wrap {
   position: relative;
-  width: min(64%, 290px);
+  width: min(32%, 145px);
   margin-bottom: 4%;
   cursor: pointer;
   z-index: 2;
@@ -1576,5 +1576,5 @@ body {
 }
 
 @media (max-height: 640px) {
-  .binglee-wrap { width: min(58%, 250px); }
+  .binglee-wrap { width: min(29%, 125px); }
 }
