@@ -25,29 +25,17 @@
         <p class="date" id="today-date">7월 16일 수요일</p>
         <h1 class="hello" id="hello">좋은 아침이에요 ☀️</h1>
       </div>
-      <div class="streak-chip" title="빙글이와 함께한 날">
-        <span class="streak-ice">🧊</span>
-        <span id="streak-count">12</span>일째
-      </div>
-    </header>
-
-    <!-- ===== 감정 온도 지수 (컴팩트) ===== -->
-    <section class="temp-card" aria-label="감정 온도 지수">
-      <div class="temp-head">
-        <span class="temp-label">감정 온도 지수</span>
-        <span class="temp-value"><b id="temp-now">36</b>°C</span>
-      </div>
-      <div class="temp-track">
-        <div class="temp-fill" id="temp-fill"></div>
-        <div class="temp-marker" id="temp-marker">
-          <span class="temp-marker-dot"></span>
+      <div class="chip-group">
+        <div class="coin-chip" title="얼음 조각 — 앱 내 재화">
+          <span class="coin-ice">❄️</span>
+          <span id="coin-count">120</span>
+        </div>
+        <div class="streak-chip" title="빙글이와 함께한 날">
+          <span class="streak-ice">🧊</span>
+          <span id="streak-count">12</span>일째
         </div>
       </div>
-      <div class="temp-scale">
-        <span>12°C · 소진</span>
-        <span>100°C · 회복</span>
-      </div>
-    </section>
+    </header>
 
     <!-- ===== 냉장고 내부 무대 (풀스크린) ===== -->
     <section class="stage" aria-label="빙글이의 냉장고">
@@ -55,22 +43,17 @@
         <div class="wall-tex-layer" id="wall-tex-layer" aria-hidden="true"></div>
         <div class="fridge-light"></div>
 
-        <!-- 냉장고 내부 배경: 선반 -->
+        <!-- 냉장고 내부 배경: 선반 (소품은 JS가 장착 상태에 따라 렌더링) -->
         <div class="fridge-shelf shelf-1">
-          <span class="prop" data-slot="1">❄️</span>
-          <span class="prop" data-slot="2">🫧</span>
+          <span class="prop" data-slot="1"></span>
+          <span class="prop" data-slot="2"></span>
         </div>
         <div class="fridge-shelf shelf-2">
-          <span class="prop" data-slot="3">⭐</span>
+          <span class="prop" data-slot="3"></span>
         </div>
 
         <!-- 냉장고 꾸미기 아이템이 배치될 레이어 (추후 꾸미기 기능에서 사용) -->
         <div class="decor-layer" id="decor-layer" aria-hidden="true"></div>
-
-        <div class="pet-badge">
-          <span class="name">빙글이</span>
-          <span class="lv">행복을 만드는 얼음 · 2주차</span>
-        </div>
 
         <!-- 우측 플로팅 버튼들 -->
         <div class="fab-stack">
@@ -81,10 +64,6 @@
           <button class="fab fab-mission" id="mission-fab" aria-label="오늘의 돌봄 미션 열기">
             <span class="fab-ico">📋</span>
             <span class="fab-badge" id="fab-badge">0/5</span>
-          </button>
-          <button class="fab fab-decor" id="decor-fab" aria-label="냉장고 꾸미기">
-            <span class="fab-ico">🎨</span>
-            <span class="fab-label">꾸미기</span>
           </button>
         </div>
 
@@ -135,7 +114,7 @@
   <!-- ===== 하단 내비게이션 ===== -->
   <nav class="bottom-nav" aria-label="메인 내비게이션">
     <button class="nav-item active" data-view="home"><span class="nav-ico">🏠</span><span>홈</span></button>
-    <button class="nav-item" data-view="fridge"><span class="nav-ico">🧊</span><span>냉장고</span></button>
+    <button class="nav-item" data-view="decor" id="nav-decor"><span class="nav-ico">🎨</span><span>꾸미기</span></button>
     <button class="nav-item nav-walk" data-view="walk"><span class="nav-ico walk-ico">🚶</span><span>산책</span></button>
     <button class="nav-item" data-view="cave"><span class="nav-ico">🫧</span><span>얼음동굴</span></button>
     <button class="nav-item" data-view="log"><span class="nav-ico">📊</span><span>기록</span></button>
@@ -153,50 +132,50 @@
     </div>
 
     <ul class="mission-list" id="mission-list">
-      <li class="mission" data-temp="10">
+      <li class="mission" data-temp="10" data-coin="15">
         <button class="check" aria-label="완료 체크"></button>
         <span class="m-emoji">🚶</span>
         <div class="m-body">
           <p class="m-title">빙글이와 5분 산책 그리기</p>
           <p class="m-sub">선호 기반 신체활동 · 궤적 드로잉</p>
         </div>
-        <span class="m-temp">+10°C</span>
+        <span class="m-temp">❄️ 15</span>
       </li>
-      <li class="mission" data-temp="8">
+      <li class="mission" data-temp="8" data-coin="10">
         <button class="check" aria-label="완료 체크"></button>
         <span class="m-emoji">💌</span>
         <div class="m-body">
           <p class="m-title">빙글이에게 감사 편지 쓰기</p>
           <p class="m-sub">오늘 고마웠던 일 한 가지</p>
         </div>
-        <span class="m-temp">+8°C</span>
+        <span class="m-temp">❄️ 10</span>
       </li>
-      <li class="mission" data-temp="8">
+      <li class="mission" data-temp="8" data-coin="10">
         <button class="check" aria-label="완료 체크"></button>
         <span class="m-emoji">🧘</span>
         <div class="m-body">
           <p class="m-title">마음챙김 명상 5분</p>
           <p class="m-sub">참여형 명상 · 빙글이가 함께해요</p>
         </div>
-        <span class="m-temp">+8°C</span>
+        <span class="m-temp">❄️ 10</span>
       </li>
-      <li class="mission" data-temp="6">
+      <li class="mission" data-temp="6" data-coin="8">
         <button class="check" aria-label="완료 체크"></button>
         <span class="m-emoji">🌙</span>
         <div class="m-body">
           <p class="m-title">수면 루틴 알림 켜기</p>
           <p class="m-sub">수면 안정화 · 23:30 취침 준비</p>
         </div>
-        <span class="m-temp">+6°C</span>
+        <span class="m-temp">❄️ 8</span>
       </li>
-      <li class="mission" data-temp="6">
+      <li class="mission" data-temp="6" data-coin="8">
         <button class="check" aria-label="완료 체크"></button>
         <span class="m-emoji">🎬</span>
         <div class="m-body">
           <p class="m-title">빙글이 V-log 확인하기</p>
           <p class="m-sub">어제의 회복 기록 하이라이트</p>
         </div>
-        <span class="m-temp">+6°C</span>
+        <span class="m-temp">❄️ 8</span>
       </li>
     </ul>
   </div>

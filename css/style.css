@@ -103,6 +103,29 @@ body {
 
 .streak-ice { font-size: 14px; }
 
+/* 상단 칩 그룹: 재화 + 연속일 */
+.chip-group {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.coin-chip {
+  background: linear-gradient(135deg, #eaf8ff, var(--ice-100));
+  border: 1.5px solid var(--ice-300);
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-size: 13.5px;
+  font-family: var(--font-round);
+  color: var(--navy);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.coin-ice { font-size: 14px; }
+
 /* ===== 감정 온도 카드 (컴팩트) ===== */
 .temp-card {
   background: var(--card);
@@ -1510,13 +1533,51 @@ body {
 }
 
 .decor-swatch .swatch-check {
-  display: none;
   font-size: 10px;
   color: var(--coral);
   font-family: var(--font-round);
 }
 
-.decor-swatch.selected .swatch-check { display: block; }
+/* 가격표 / 보유 상태 */
+.swatch-price {
+  font-size: 10px;
+  font-family: var(--font-round);
+  color: var(--ice-400);
+  background: var(--ice-100);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.swatch-price.owned {
+  color: #14907a;
+  background: #dff7ef;
+}
+
+/* 미보유(구매 가능) 아이템은 살짝 흐리게 */
+.decor-swatch.locked .swatch-tile,
+.decor-swatch.locked .prop-tile { opacity: 0.55; filter: grayscale(0.25); }
+
+/* 소품 타일: 이모지 표시 */
+.swatch-tile.prop-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  background: var(--ice-50);
+}
+
+/* 상점 잔액 표시 */
+.decor-balance {
+  flex: none;
+  align-self: flex-start;
+  font-family: var(--font-round);
+  font-size: 13px;
+  color: var(--navy);
+  background: linear-gradient(135deg, #eaf8ff, var(--ice-100));
+  border: 1.5px solid var(--ice-300);
+  border-radius: 999px;
+  padding: 4px 11px;
+}
 
 .decor-preview {
   display: flex;
