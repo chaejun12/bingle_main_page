@@ -1935,3 +1935,377 @@ body {
 .cur-status.today { background: linear-gradient(135deg, #8fd3a8, #57b98a); color: #fff; }
 .cur-status.locked { background: var(--ice-100); color: var(--navy-soft); }
 .cur-status.open { background: var(--coral-soft); color: var(--coral); }
+
+/* ============================================
+   얼음동굴 — 친구 학습 현황 표시
+   ============================================ */
+.cave-study {
+  font-family: var(--font-round);
+  font-size: 9.5px;
+  color: var(--navy-soft);
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin-top: 3px;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(30, 58, 95, 0.15);
+}
+
+.cave-study.did { color: #3f9d6e; background: #e8f8f0; }
+
+.cave-study-card {
+  background: var(--card);
+  border: var(--pixel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+
+.cs-title {
+  font-family: var(--font-round);
+  font-size: 12.5px;
+  margin-bottom: 8px;
+}
+
+.cs-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--ice-100);
+  overflow: hidden;
+  margin-bottom: 7px;
+}
+
+.cs-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8fd3a8, #57b98a);
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cs-text {
+  font-size: 11.5px;
+  color: var(--navy-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cs-today {
+  font-family: var(--font-round);
+  font-size: 10.5px;
+  background: var(--ice-100);
+  color: var(--navy-soft);
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+
+.cs-today.did { background: #e8f8f0; color: #3f9d6e; }
+
+/* ============================================
+   전체 학습 — 섹터 구분
+   ============================================ */
+.cur-sector { margin-bottom: 16px; }
+
+.cur-sector.is-locked { opacity: 0.75; }
+
+.cur-sector-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.cur-sector-title {
+  font-family: var(--font-round);
+  font-size: 14.5px;
+}
+
+.cur-sector-count {
+  font-family: var(--font-round);
+  font-size: 11.5px;
+  color: var(--ice-400);
+  background: var(--ice-100);
+  border-radius: 999px;
+  padding: 3px 11px;
+}
+
+.cur-sector-desc {
+  font-size: 11.5px;
+  color: var(--navy-soft);
+  margin-bottom: 8px;
+}
+
+.cur-adv-notice {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--navy-soft);
+  background: var(--ice-100);
+  border-radius: 14px;
+  padding: 11px 14px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+/* ============================================
+   캘린더 🗓️ — 의대생 일정 관리
+   ============================================ */
+.cal-intro { margin-bottom: 12px; }
+
+.cal-card {
+  background: var(--card);
+  border: var(--pixel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 13px 14px;
+  margin-bottom: 12px;
+}
+
+/* D-day 칩 */
+.cal-dday-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+}
+
+.cal-dday {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  border: var(--pixel-border);
+  background: var(--card);
+  border-radius: 14px;
+  padding: 9px 12px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  font-family: var(--font-body);
+  transition: transform 0.15s;
+}
+
+.cal-dday:hover { transform: translateY(-1px); }
+
+.cal-dday .cd-count {
+  font-family: var(--font-round);
+  font-size: 15px;
+  color: var(--navy);
+}
+
+.cal-dday.urgent .cd-count { color: var(--coral); }
+
+.cal-dday.urgent {
+  border-color: #f9c1ab;
+  background: linear-gradient(160deg, #fff3ec 0%, #ffffff 70%);
+}
+
+.cal-dday .cd-title {
+  font-size: 11px;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.cal-dday .cd-date { font-size: 10px; color: var(--navy-soft); }
+
+/* 월 이동 */
+.cal-month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cal-month-title {
+  font-family: var(--font-round);
+  font-size: 15.5px;
+}
+
+/* 그리드 */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.cal-cell {
+  min-height: 40px;
+  border: none;
+  background: none;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4px 0 2px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  color: var(--navy);
+  transition: background 0.15s;
+}
+
+.cal-cell.empty, .cal-cell.head { cursor: default; min-height: auto; }
+
+.cal-cell.head {
+  font-size: 10.5px;
+  color: var(--navy-soft);
+  padding: 2px 0;
+}
+
+.cal-cell.sun { color: #e0705a; }
+.cal-cell.sat { color: var(--ice-400); }
+
+.cal-cell.day:hover { background: var(--ice-50); }
+
+.cal-cell .cal-num { font-size: 12.5px; line-height: 1.3; }
+
+.cal-cell.today {
+  background: var(--ice-100);
+}
+
+.cal-cell.today .cal-num {
+  font-family: var(--font-round);
+  color: var(--navy);
+}
+
+.cal-cell.selected {
+  outline: 2px solid var(--ice-400);
+  outline-offset: -2px;
+  background: var(--ice-50);
+}
+
+.cal-marks {
+  font-size: 8px;
+  letter-spacing: -1px;
+  min-height: 11px;
+  line-height: 1.2;
+}
+
+.cal-legend {
+  margin-top: 9px;
+  font-size: 10px;
+  color: var(--navy-soft);
+  text-align: center;
+}
+
+.cal-hint {
+  font-size: 12px;
+  color: var(--navy-soft);
+  text-align: center;
+  padding: 8px 0 2px;
+}
+
+/* 선택한 날 패널 */
+.cal-day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 9px;
+}
+
+.cal-day-title {
+  font-family: var(--font-round);
+  font-size: 14px;
+}
+
+.cal-day-dday {
+  font-family: var(--font-round);
+  font-size: 12px;
+  color: var(--coral);
+  background: var(--coral-soft);
+  border-radius: 999px;
+  padding: 3px 11px;
+}
+
+.cal-event-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.cal-event {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ice-50);
+  border-radius: 12px;
+  padding: 8px 11px;
+}
+
+.ce-dot { font-size: 11px; }
+.ce-title { flex: 1; font-size: 12.5px; }
+.ce-cat { font-size: 10px; color: var(--navy-soft); }
+
+.ce-del {
+  border: none;
+  background: none;
+  color: var(--navy-soft);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: 8px;
+}
+
+.ce-del:hover { background: var(--ice-200); }
+
+/* 일정 추가 */
+.cal-cat-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.cal-cat-chip {
+  border: var(--pixel-border);
+  background: var(--card);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--navy);
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cal-cat-chip.selected {
+  background: var(--ice-100);
+  border-color: var(--ice-300);
+  font-weight: 700;
+}
+
+.cal-add-form {
+  display: flex;
+  gap: 7px;
+}
+
+.cal-add-form input {
+  flex: 1;
+  border: var(--pixel-border);
+  border-radius: 12px;
+  padding: 9px 12px;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  color: var(--navy);
+  background: var(--ice-50);
+  outline: none;
+}
+
+.cal-add-form input:focus { border-color: var(--ice-300); }
+
+.cal-add-form button {
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7ec8ea, var(--ice-400));
+  color: #fff;
+  font-family: var(--font-round);
+  font-size: 12.5px;
+  padding: 0 16px;
+  cursor: pointer;
+}
