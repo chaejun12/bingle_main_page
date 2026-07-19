@@ -65,6 +65,10 @@
             <span class="fab-ico">📋</span>
             <span class="fab-badge" id="fab-badge">0/5</span>
           </button>
+          <button class="fab fab-lecture" id="lecture-fab" aria-label="오늘의 AI 강의 열기">
+            <span class="fab-ico">📚</span>
+            <span class="fab-badge" id="lecture-fab-badge">0/14</span>
+          </button>
         </div>
 
         <div class="bubble" id="speech-bubble">톡. 톡. 나 여기 있어!</div>
@@ -220,6 +224,19 @@
   </div>
 </div>
 
+<!-- ===== AI 데일리 강의 팝업 (의대생용 하루 한 강의) — 내용은 JS가 렌더링 ===== -->
+<div class="modal-overlay hidden" id="lecture-modal" role="dialog" aria-modal="true" aria-labelledby="lecture-modal-title">
+  <div class="modal lecture-modal">
+    <div class="modal-head">
+      <h2 id="lecture-modal-title">📚 오늘의 AI 강의</h2>
+      <span class="manual-chip">의대생 × Claude</span>
+      <button class="modal-close" id="lecture-close" aria-label="닫기">✕</button>
+    </div>
+    <div class="lecture-body" id="lecture-body"></div>
+  </div>
+</div>
+
 <script src="js/app.js"></script>
+<script src="js/lectures.js"></script>
 </body>
 </html>
