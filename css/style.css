@@ -2403,3 +2403,239 @@ body {
   text-align: left;
   font-size: 10.5px;
 }
+
+/* ============================================
+   꾸미기 상점 페이지 — 빙글이 방 라이브 미리보기
+   ============================================ */
+.shop-preview {
+  background: var(--card);
+  border: var(--pixel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 13px 14px 11px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.shop-preview-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.sp-room {
+  position: relative;
+  height: 170px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2.5px solid #fff;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #eef9ff 0%, #d3ecfb 55%, #b8dff4 100%);
+  box-shadow:
+    inset 0 -10px 22px rgba(94, 168, 209, 0.25),
+    inset 0 8px 18px rgba(255, 255, 255, 0.6);
+}
+
+.sp-wall {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  background-size: 40px 40px;
+}
+
+.sp-shelf {
+  position: absolute;
+  top: 34px;
+  left: 12%;
+  right: 12%;
+  height: 6px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(190, 224, 244, 0.9));
+  border-radius: 4px;
+  box-shadow: 0 3px 6px rgba(94, 168, 209, 0.25);
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+}
+
+.sp-prop {
+  font-size: 16px;
+  transform: translateY(-3px);
+  filter: drop-shadow(0 2px 2px rgba(30, 58, 95, 0.15));
+}
+
+.sp-binglee {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  width: 58px;
+  z-index: 2;
+}
+
+.sp-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 26px;
+  background-repeat: repeat;
+  border-top: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.shop-preview-hint {
+  margin-top: 9px;
+  font-size: 11px;
+  color: var(--navy-soft);
+}
+
+/* ============================================
+   한 줄 일기 📔
+   ============================================ */
+.fab-diary {
+  background: linear-gradient(135deg, #f2b8d0, #e58cb1);
+  box-shadow: 0 6px 16px rgba(229, 140, 177, 0.45);
+}
+
+.fab-diary.has-entry {
+  background: linear-gradient(135deg, #f7cfe0, #efaac6);
+}
+
+.diary-intro { margin-bottom: 12px; }
+
+.diary-write {
+  background: var(--card);
+  border: var(--pixel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 13px 14px;
+  margin-bottom: 12px;
+}
+
+.diary-tag-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 9px;
+}
+
+.diary-tag-chip {
+  border: var(--pixel-border);
+  background: var(--card);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--navy);
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.diary-tag-chip.selected {
+  background: #fdeef5;
+  border-color: #f2b8d0;
+}
+
+.diary-form { display: flex; gap: 7px; }
+
+.diary-form input {
+  flex: 1;
+  border: var(--pixel-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--navy);
+  background: var(--ice-50);
+  outline: none;
+}
+
+.diary-form input:focus { border-color: #f2b8d0; }
+
+.diary-form button {
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f2b8d0, #e58cb1);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 0 18px;
+  cursor: pointer;
+}
+
+.diary-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.diary-entry {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--ice-50);
+  border-radius: 12px;
+  padding: 9px 12px;
+}
+
+.de-tag { font-size: 14px; flex: none; }
+.de-text { flex: 1; font-size: 13px; line-height: 1.5; }
+
+.de-del {
+  border: none;
+  background: none;
+  color: var(--navy-soft);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: 8px;
+}
+
+.de-del:hover { background: var(--ice-200); }
+
+.diary-past { margin-bottom: 8px; }
+
+.diary-day-group { margin-bottom: 11px; }
+
+.diary-day-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--navy-soft);
+  margin-bottom: 5px;
+}
+
+/* ===== 캘린더 시작~끝 시간 입력 ===== */
+.cal-time-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.cal-time-row label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--navy-soft);
+  flex: 1;
+}
+
+.cal-time-row input[type='time'] {
+  flex: 1;
+  min-width: 0;
+  border: var(--pixel-border);
+  border-radius: 12px;
+  padding: 8px 8px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--navy);
+  background: var(--ice-50);
+  outline: none;
+}
+
+.cal-time-row input[type='time']:focus { border-color: var(--ice-300); }
+
+.cal-time-tilde { color: var(--navy-soft); font-size: 12px; }

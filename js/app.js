@@ -234,8 +234,7 @@ function saveDecor() {
 
 const wallLayer = $('#wall-tex-layer');
 const floorLayer = $('#fridge-floor');
-const decorModal = $('#decor-modal');
-const decorBody = $('#decor-body');
+const decorBody = $('#decor-page-body');
 
 function tileUrl(kind, id) {
   return `assets/decor/${kind}/${id}.svg`;
@@ -353,14 +352,23 @@ function propSwatchesHTML() {
 function renderDecorBody() {
   const wallId = decorState.wall || 'ice';
   const floorId = decorState.floor || 'ice';
+  const shopCoin = $('#shop-coin-count');
+  if (shopCoin) shopCoin.textContent = state.coins;
   decorBody.innerHTML = `
-    <div class="decor-preview">
-      <div class="dp-box">
-        <span class="dp-wall" style="background-image:url(${tileUrl('walls', wallId)})"></span>
-        <span class="dp-floor" style="background-image:url(${tileUrl('floors', floorId)});background-size:16px 16px"></span>
+    <div class="shop-preview">
+      <p class="shop-preview-title">🧊 빙글이의 방 미리보기</p>
+      <div class="sp-room">
+        <span class="sp-wall" style="background-image:url(${tileUrl('walls', wallId)})"></span>
+        <div class="sp-shelf">
+          ${decorState.equippedProps.map((id) => {
+            const prop = DECOR_PROPS.find((p) => p.id === id);
+            return prop ? `<span class="sp-prop">${prop.emoji}</span>` : '';
+          }).join('')}
+        </div>
+        <img class="sprite sp-binglee" src="assets/binglee/standing.png" alt="빙글이" draggable="false" />
+        <span class="sp-floor" style="background-image:url(${tileUrl('floors', floorId)});background-size:20px 20px"></span>
       </div>
-      <p>미션으로 모은 얼음 조각 ❄️으로<br>벽·바닥·소품을 사서 꾸며봐!</p>
-      <span class="decor-balance">❄️ ${state.coins}</span>
+      <p class="shop-preview-hint">아이템을 고르면 여기서 바로 바뀌어! 실제 냉장고에도 즉시 적용돼.</p>
     </div>
     <button class="decor-reset-btn" id="decor-reset">↺ 기본값으로</button>
     <div class="decor-section">
@@ -396,16 +404,6 @@ function renderDecorBody() {
     showToast('↺ 기본 냉장고로 되돌렸어');
   });
 }
-
-function openDecorShop() {
-  renderDecorBody();
-  openModal(decorModal);
-}
-
-$('#decor-close').addEventListener('click', () => closeModal(decorModal));
-decorModal.addEventListener('click', (e) => {
-  if (e.target === decorModal) closeModal(decorModal);
-});
 
 // 저장된 꾸미기 테마 복원 (앱 시작 시 1회)
 applyDecor();
@@ -552,6 +550,8 @@ const views = {
   lecture: $('#view-lecture'),
   curriculum: $('#view-curriculum'),
   calendar: $('#view-calendar'),
+  decor: $('#view-decor'),
+  diary: $('#view-diary'),
 };
 
 function switchView(name) {
@@ -562,15 +562,12 @@ function switchView(name) {
   if (name === 'cave') onEnterCave();
   if (name === 'curriculum') renderCurriculum(); // lectures.js
   if (name === 'calendar') renderCalendar(); // calendar.js
+  if (name === 'decor') renderDecorBody();
+  if (name === 'diary') renderDiary(); // diary.js
 }
 
 document.querySelectorAll('.nav-item').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const v = btn.dataset.view;
-    if (v === 'home' || v === 'cave' || v === 'curriculum' || v === 'calendar') switchView(v);
-    else if (v === 'decor') openDecorShop(); // 현재 뷰 위에 상점 팝업
-    else showToast('🚧 준비 중인 기능이야! 조금만 기다려줘');
-  });
+  btn.addEventListener('click', () => switchView(btn.dataset.view));
 });
 
 /* ---------- 마을 렌더링 ---------- */
@@ -860,7 +857,6 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closeModal(caveModal);
     closeModal(letterModal);
-    closeModal(decorModal);
     closeVlog();
   }
 });
