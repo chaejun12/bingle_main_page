@@ -1,16 +1,10 @@
 /* ============================================
    빙글이 Binglee — 메인 인터페이스 로직
    '행복을 만드는 얼음' 스토리 기반
-   감정 온도 · 상태 확인(생존 매뉴얼) · 돌봄 미션
+   오늘의 미션 · AI 학습 · 캘린더
    ============================================ */
 
-const TEMP_MIN = 12;   // 소진 — 빙글이가 녹기 직전
-const TEMP_MAX = 100;  // 회복 완료
-const TEMP_BASE = 36;  // 상태 확인 전 기본 온도
-const MELT_LINE = 40;  // 이 온도보다 낮으면 빙글이가 녹기 시작
-
 const state = {
-  temp: TEMP_BASE,
   done: 0,
   total: 5,
   userName: localStorage.getItem('bingle_user_name') || '',
@@ -26,9 +20,6 @@ const progressEl = $('#missions-progress');
 const fabBadge = $('#fab-badge');
 const missionFab = $('#mission-fab');
 const missionModal = $('#mission-modal');
-const checkinFab = $('#checkin-fab');
-const checkinModal = $('#checkin-modal');
-const checkinBody = $('#checkin-body');
 
 /* ---------- 날짜·인사 ---------- */
 function renderGreeting() {
@@ -49,18 +40,6 @@ function renderGreeting() {
     : base;
 }
 
-/* ---------- 감정 온도 (내부 상태) ----------
-   게이지 UI는 제거됐지만 온도는 내부적으로 유지되어
-   빙글이의 녹는 연출과 상태 확인 결과에 계속 쓰인다 */
-function renderTemp() {
-  updateMelt();
-}
-
-function raiseTemp(delta) {
-  state.temp = Math.min(TEMP_MAX, state.temp + delta);
-  renderTemp();
-}
-
 /* ---------- 앱 내 재화: 얼음 조각 ❄️ ---------- */
 function renderCoins() {
   $('#coin-count').textContent = state.coins;
@@ -79,25 +58,15 @@ function spendCoins(n) {
   return true;
 }
 
-/* 온도가 낮으면 빙글이가 녹기 시작한다 */
-function updateMelt() {
-  binglee.classList.toggle('melting', state.temp < MELT_LINE);
-}
-
 /* ---------- 말풍선 (스토리 톤) ---------- */
 const idleLines = [
   '톡. 톡. 나 여기 있어!',
   '나는 행복을 만드는 얼음이야. 잊지 마!',
   '냉장고 안은 역시 아늑하다~',
-  '무리하지 않아도 괜찮아.',
-  '네 하루가 너무 뜨거워 보여. 조금 식히고 가자.',
-  '네가 다시 웃을 수 있을 때까지, 나는 절대 녹지 않을 거야.',
-];
-
-const meltingLines = [
-  '어쩐지... 아침부터 내가 좀 빨리 녹는 것 같았어.',
-  '괜찮아, 아직 안 녹았어! 아직!',
-  '오늘 미션 하나만 해줘. 내가 좀 오래 버티게.',
+  '오늘의 AI 강의 들었어? 📚',
+  '미션 하나 하고 갈래? 얼음 조각 줄게!',
+  '얼음 조각 모아서 냉장고 꾸미자~',
+  '캘린더에 시험 일정 적어놨어? 🗓️',
 ];
 
 const happyLines = [
@@ -117,11 +86,10 @@ function say(text, holdMs = 2800) {
   bubbleTimer = setTimeout(() => bubble.classList.add('hidden'), holdMs);
 }
 
-// 유휴 상태에서 주기적으로 혼잣말 — 녹는 중이면 녹는 얘기부터
+// 유휴 상태에서 주기적으로 혼잣말
 setInterval(() => {
   if (bubble.classList.contains('hidden')) {
-    const pool = state.temp < MELT_LINE && Math.random() < 0.5 ? meltingLines : idleLines;
-    say(pool[Math.floor(Math.random() * pool.length)]);
+    say(idleLines[Math.floor(Math.random() * idleLines.length)]);
   }
 }, 9000);
 
@@ -176,20 +144,15 @@ function showToast(text) {
 function openModal(overlay) { overlay.classList.remove('hidden'); }
 function closeModal(overlay) { overlay.classList.add('hidden'); }
 
-[missionModal, checkinModal].forEach((overlay) => {
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closeModal(overlay);
-  });
+missionModal.addEventListener('click', (e) => {
+  if (e.target === missionModal) closeModal(missionModal);
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    closeModal(missionModal);
-    closeModal(checkinModal);
-  }
+  if (e.key === 'Escape') closeModal(missionModal);
 });
 
-/* ---------- 돌봄 미션 팝업 ---------- */
+/* ---------- 오늘의 미션 팝업 ---------- */
 missionFab.addEventListener('click', () => openModal(missionModal));
 $('#modal-close').addEventListener('click', () => closeModal(missionModal));
 
@@ -207,7 +170,6 @@ document.querySelectorAll('.mission').forEach((mission) => {
     state.done += 1;
     renderProgress();
 
-    raiseTemp(Number(mission.dataset.temp) || 5);
     const reward = Number(mission.dataset.coin) || 5;
     addCoins(reward);
     showToast(`❄️ +${reward} 얼음 조각을 얻었어!`);
@@ -224,147 +186,6 @@ document.querySelectorAll('.mission').forEach((mission) => {
   });
 });
 
-/* ============================================
-   오늘의 상태 확인 — 빙글이의 생존 매뉴얼
-   이름 입력(최초 1회) → KEDS 3문항 → 결론
-   ============================================ */
-
-const QUESTIONS = [
-  {
-    text: '직무로 인해 감정적으로 고갈된 느낌이 든다.',
-    intro: '자, 첫 번째.\n매뉴얼에 이렇게 적혀 있어.',
-    reply: [
-      '오, 아직 덜 미지근하네!',
-      '흠… 그 정도면 나쁘지 않아.',
-      '흠.',
-      '역시 네 커피는 얼음 많이 넣어야겠다.',
-      '너… 너무 미지근해.',
-    ],
-  },
-  {
-    text: '근무 후 기진맥진한 느낌이 든다.',
-    intro: '두 번째.\n"누구나 그렇지"라고 넘어가기 없기.',
-    reply: [
-      '오늘은 좀 남아 있네. 다행이다!',
-      '그 정도면 버틸 만하지?',
-      '누구나 그렇다는 말로 넘어가는 사람은 보통 꽤 그렇다는 뜻이래.',
-      '어쩐지… 아침부터 내가 좀 빨리 녹는 것 같았어.',
-      '이건 내 탓 아니야. 네 탓이야.',
-    ],
-  },
-  {
-    text: '아침에 일어나 또 하루 일을 대면해야 한다는 것이 피곤하게 느껴진다.',
-    intro: '세 번째.\n이게 제일 중요해 보이는데.',
-    reply: [
-      '그 정도면 아침이 가볍네!',
-      '나쁘지 않아. 기록해둘게.',
-      '왜 말이 없어? …생각 중인 거 보니 맞다는 뜻이네.',
-      '알람보다 마음이 먼저 지치는 타입이구나.',
-      '기록해둬야겠다. 인간, 오늘도 출근 전부터 지침.',
-    ],
-  },
-];
-
-const checkin = { step: -1, answers: [] };
-
-function likertHTML() {
-  const labels = ['전혀 그렇지 않다', '가끔 그렇다', '보통이다', '자주 그렇다', '매우 그렇다'];
-  return `<ul class="likert">${labels
-    .map((l, i) => `<li><button data-v="${i + 1}"><span class="num">${i + 1}</span>${l}</button></li>`)
-    .join('')}</ul>`;
-}
-
-function renderCheckinStep() {
-  // 이름을 아직 모르면 이름부터 (스토리: "앞으로 계속 같이 있을 건데, 너라고 부를 순 없으니까.")
-  if (!state.userName && checkin.step === -1) {
-    checkinBody.innerHTML = `
-      <div class="ice-line"><img class="sprite sm mini-ice-sprite" src="assets/binglee/standing.png" alt="빙글이" draggable="false" />
-        <p>좋아, 그럼 오늘의 상태 확인부터 하자.\n…아, 그 전에. 이름이 뭐야?\n앞으로 계속 같이 있을 건데, 너라고 부를 순 없으니까.</p>
-      </div>
-      <form class="name-form" id="name-form">
-        <input type="text" id="name-input" maxlength="10" placeholder="이름을 알려줘" autocomplete="off" />
-        <button type="submit">알려주기</button>
-      </form>`;
-    $('#name-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const v = $('#name-input').value.trim();
-      if (!v) return;
-      state.userName = v;
-      localStorage.setItem('bingle_user_name', v);
-      renderGreeting();
-      checkinBody.innerHTML = `
-        <div class="ice-line"><img class="sprite sm mini-ice-sprite" src="assets/binglee/standing.png" alt="빙글이" draggable="false" />
-          <p>${v}… ${v}…\n(자기 몸집만 한 연필로 힘겹게 적는 중)\n그럼, 잘 부탁해. ${v}!</p>
-        </div>`;
-      setTimeout(() => { checkin.step = 0; renderCheckinStep(); }, 1600);
-    });
-    return;
-  }
-
-  if (checkin.step < 0) checkin.step = 0;
-
-  // 질문 단계
-  if (checkin.step < QUESTIONS.length) {
-    const q = QUESTIONS[checkin.step];
-    checkinBody.innerHTML = `
-      <div class="ice-line"><img class="sprite sm mini-ice-sprite" src="assets/binglee/standing.png" alt="빙글이" draggable="false" /><p>${q.intro}</p></div>
-      <p class="q-count">질문 ${checkin.step + 1} / ${QUESTIONS.length}</p>
-      <div class="ice-line" style="margin-bottom:10px"><span class="mini-ice">📜</span>
-        <p><b>${q.text}</b></p>
-      </div>
-      ${likertHTML()}`;
-
-    checkinBody.querySelectorAll('.likert button').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const v = Number(btn.dataset.v);
-        checkin.answers[checkin.step] = v;
-        // 빙글이의 얄미운 코멘트
-        checkinBody.innerHTML = `
-          <div class="ice-line"><img class="sprite sm mini-ice-sprite" src="assets/binglee/standing.png" alt="빙글이" draggable="false" /><p>${q.reply[v - 1]}</p></div>`;
-        setTimeout(() => { checkin.step += 1; renderCheckinStep(); }, 1400);
-      });
-    });
-    return;
-  }
-
-  // 결론 단계
-  const sum = checkin.answers.reduce((a, b) => a + b, 0); // 3~15
-  state.temp = Math.max(TEMP_MIN, Math.min(TEMP_MAX, TEMP_MIN + (15 - sum) * 4));
-  renderTemp();
-
-  let verdict;
-  if (sum <= 6) {
-    verdict = '결론이 나왔어.\n오늘 하루는 덜 뜨겁네. 그래도 방심 금지!';
-  } else if (sum <= 10) {
-    verdict = '결론이 나왔어.\n너는 오늘 아이스 아메리카노를 큰 걸로 마셔야 해.\n…그리고 나랑 미션 하나만 하자.';
-  } else {
-    verdict = '결론이 나왔어.\n네 하루가 너무 뜨거워 보이니까…\n오늘은 내가 옆에 딱 붙어 있을게. 조금 식히러 가자.';
-  }
-
-  checkinBody.innerHTML = `
-    <div class="ice-line"><img class="sprite sm mini-ice-sprite" src="assets/binglee/standing.png" alt="빙글이" draggable="false" /><p>${verdict}</p></div>
-    <div class="ice-line"><span class="mini-ice">📜</span>
-      <p>오늘의 감정 온도: <b>${state.temp}°C</b>\n${state.temp < MELT_LINE ? '(…이 온도면 나 좀 빨리 녹아. 미션 부탁해.)' : '(이 정도면 나 오늘 잘 버틸 수 있어!)'}</p>
-    </div>
-    <button class="checkin-done-btn" id="checkin-done">알겠어, 같이 가자 🧊</button>`;
-
-  $('#checkin-done').addEventListener('click', () => {
-    closeModal(checkinModal);
-    say(state.temp < MELT_LINE
-      ? '어쩐지… 오늘 좀 빨리 녹는 것 같았어. 미션 잊지 마!'
-      : '좋아! 오늘도 잘 버텨보자!', 3600);
-  });
-}
-
-function startCheckin() {
-  checkin.step = state.userName ? 0 : -1;
-  checkin.answers = [];
-  renderCheckinStep();
-  openModal(checkinModal);
-}
-
-checkinFab.addEventListener('click', startCheckin);
-$('#checkin-close').addEventListener('click', () => closeModal(checkinModal));
 
 /* ============================================
    냉장고 꾸미기 상점 — 얼음 조각(❄️)으로
@@ -636,7 +457,7 @@ const PEOPLE = [
     ],
   },
   {
-    id: 'yurim', name: '유림', color: '#ffd6e8', tint: 'hue-rotate(140deg) saturate(0.75) brightness(1.06)', rest: '21~23시', status: 'rest', now: 'movie',
+    id: 'yurim', name: '유림', study: { done: 9, today: true }, color: '#ffd6e8', tint: 'hue-rotate(140deg) saturate(0.75) brightness(1.06)', rest: '21~23시', status: 'rest', now: 'movie',
     pos: { x: 18, y: 46 },
     vlog: [
       { t: '08:00', act: 'gym', label: '아침 운동 완료' },
@@ -647,7 +468,7 @@ const PEOPLE = [
     ],
   },
   {
-    id: 'gyubin', name: '규빈', color: '#d6f5d6', tint: 'hue-rotate(290deg) saturate(0.8) brightness(1.04)', rest: '22~24시', status: 'busy', now: 'work',
+    id: 'gyubin', name: '규빈', study: { done: 5, today: false }, color: '#d6f5d6', tint: 'hue-rotate(290deg) saturate(0.8) brightness(1.04)', rest: '22~24시', status: 'busy', now: 'work',
     pos: { x: 82, y: 44 },
     vlog: [
       { t: '09:00', act: 'work', label: '코딩 시작' },
@@ -657,7 +478,7 @@ const PEOPLE = [
     ],
   },
   {
-    id: 'junho', name: '준호', color: '#ffe9c7', tint: 'hue-rotate(195deg) saturate(0.65) brightness(1.1)', rest: '21~23시', status: 'rest', now: 'music',
+    id: 'junho', name: '준호', study: { done: 12, today: true }, color: '#ffe9c7', tint: 'hue-rotate(195deg) saturate(0.65) brightness(1.1)', rest: '21~23시', status: 'rest', now: 'music',
     pos: { x: 30, y: 72 },
     vlog: [
       { t: '07:00', act: 'walk', label: '아침 산책' },
@@ -667,7 +488,7 @@ const PEOPLE = [
     ],
   },
   {
-    id: 'sohee', name: '소희', color: '#e3d9ff', tint: 'hue-rotate(60deg) saturate(0.7) brightness(1.05)', rest: '20~22시', status: 'rest', now: 'book',
+    id: 'sohee', name: '소희', study: { done: 7, today: false }, color: '#e3d9ff', tint: 'hue-rotate(60deg) saturate(0.7) brightness(1.05)', rest: '20~22시', status: 'rest', now: 'book',
     pos: { x: 71, y: 74 },
     vlog: [
       { t: '08:30', act: 'coffee', label: '모닝 커피' },
@@ -692,6 +513,27 @@ const getSent = () => JSON.parse(localStorage.getItem(sentKey) || '[]');
 
 function personName(p) { return p.me ? (state.userName || '나') : p.name; }
 
+/* 학습 현황: 나는 실제 진행 상태(lectures.js), 친구는 목업 데이터 */
+function personStudy(p) {
+  if (p.me) return typeof myStudyStatus === 'function' ? myStudyStatus() : null;
+  return p.study ? { ...p.study, total: 14 } : null;
+}
+
+/* 동굴 방문 팝업에 넣을 학습 진행율 카드 */
+function studyCardHTML(p) {
+  const st = personStudy(p);
+  if (!st) return '';
+  const pct = Math.round((st.done / st.total) * 100);
+  return `
+    <div class="cave-study-card">
+      <p class="cs-title">📚 AI 학습 진행율</p>
+      <div class="cs-bar"><i style="width:${pct}%"></i></div>
+      <p class="cs-text">${st.done}/${st.total} 강의 · ${pct}%
+        <span class="cs-today ${st.today ? 'did' : ''}">${st.today ? '오늘 강의 완료 ✅' : '오늘은 아직 ⌛'}</span>
+      </p>
+    </div>`;
+}
+
 /* 픽셀 스프라이트 빙글이 — pose: standing / sitting / working */
 function miniBingleeHTML(person, anim = '', size = '', pose = 'standing') {
   const tint = person.tint && person.tint !== 'none' ? `filter:${person.tint}` : '';
@@ -705,6 +547,7 @@ const views = {
   cave: $('#view-cave'),
   lecture: $('#view-lecture'),
   curriculum: $('#view-curriculum'),
+  calendar: $('#view-calendar'),
 };
 
 function switchView(name) {
@@ -714,12 +557,13 @@ function switchView(name) {
   });
   if (name === 'cave') onEnterCave();
   if (name === 'curriculum') renderCurriculum(); // lectures.js
+  if (name === 'calendar') renderCalendar(); // calendar.js
 }
 
 document.querySelectorAll('.nav-item').forEach((btn) => {
   btn.addEventListener('click', () => {
     const v = btn.dataset.view;
-    if (v === 'home' || v === 'cave' || v === 'curriculum') switchView(v);
+    if (v === 'home' || v === 'cave' || v === 'curriculum' || v === 'calendar') switchView(v);
     else if (v === 'decor') openDecorShop(); // 현재 뷰 위에 상점 팝업
     else showToast('🚧 준비 중인 기능이야! 조금만 기다려줘');
   });
@@ -737,6 +581,7 @@ function renderVillage() {
     el.style.top = p.pos.y + '%';
     el.setAttribute('aria-label', `${personName(p)}의 얼음동굴`);
     const sameRest = !p.me && p.rest === ME.rest;
+    const study = personStudy(p);
     el.innerHTML = `
       <div class="cave-dome">
         ${p.me ? `<span class="cave-mail">📮 ${inbox.length}</span>` : ''}
@@ -745,7 +590,8 @@ function renderVillage() {
       <span class="cave-name">
         <span class="st ${p.status}"></span>
         ${personName(p)}${p.me ? ' (나)' : ''}${sameRest ? ' 🕘' : ''}
-      </span>`;
+      </span>
+      ${study ? `<span class="cave-study ${study.today ? 'did' : ''}">📚 ${study.done}/${study.total} ${study.today ? '✅' : '⌛'}</span>` : ''}`;
     el.addEventListener('click', () => (p.me ? openMyCave() : openFriendCave(p)));
     village.appendChild(el);
   });
@@ -792,6 +638,7 @@ function openFriendCave(p) {
         ${sameRest ? '<span class="rest-chip">🕘 나와 같은 휴식 시간!</span>' : ''}
       </div>
     </div>
+    ${studyCardHTML(p)}
     <div class="cave-actions">
       <button class="cave-action-btn vlog" data-vlog>🎬 V-log 보기</button>
       <button class="cave-action-btn letter" data-letter>💌 편지 쓰기</button>
@@ -815,6 +662,7 @@ function openMyCave() {
       <h2>내 얼음동굴 📮</h2>
       <button class="modal-close" data-close aria-label="닫기">✕</button>
     </div>
+    ${studyCardHTML(ME)}
     <p class="letter-section-title">받은 편지 ${inbox.length}</p>
     <ul class="letter-list">
       ${inbox.map((l) => `
@@ -1014,14 +862,13 @@ document.addEventListener('keydown', (e) => {
 
 /* ---------- 초기 렌더 ---------- */
 renderGreeting();
-renderTemp();
 renderCoins();
 renderProgress();
 
-// 처음 만난 사용자에게는 빙글이가 먼저 상태 확인을 청한다
-if (!state.userName) {
+// 처음 만난 사용자에게는 빙글이가 먼저 인사한다
+if (!localStorage.getItem('bingle_welcomed')) {
+  localStorage.setItem('bingle_welcomed', '1');
   setTimeout(() => {
-    say('안녕! 잘 잤어? 오늘의 상태 확인부터 하자!', 3200);
-    setTimeout(startCheckin, 1200);
+    say('안녕! 난 빙글이야. 오늘의 미션이랑 AI 강의, 같이 시작해 보자! 🧊', 3600);
   }, 900);
 }

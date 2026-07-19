@@ -57,11 +57,7 @@
 
         <!-- 우측 플로팅 버튼들 -->
         <div class="fab-stack">
-          <button class="fab fab-checkin" id="checkin-fab" aria-label="오늘의 상태 확인">
-            <span class="fab-ico">📝</span>
-            <span class="fab-label">상태 확인</span>
-          </button>
-          <button class="fab fab-mission" id="mission-fab" aria-label="오늘의 돌봄 미션 열기">
+          <button class="fab fab-mission" id="mission-fab" aria-label="오늘의 미션 열기">
             <span class="fab-ico">📋</span>
             <span class="fab-badge" id="fab-badge">0/5</span>
           </button>
@@ -141,22 +137,36 @@
     <div class="page-scroll" id="curriculum-list"></div>
   </div><!-- /view-curriculum -->
 
+  <!-- ==================== 캘린더 뷰 (의대생 일정 관리) ==================== -->
+  <div class="view hidden" id="view-calendar">
+    <header class="top-bar">
+      <div class="greeting">
+        <p class="date">시험 · 실습 · 과제를 한눈에</p>
+        <h1 class="hello">🗓️ 캘린더</h1>
+      </div>
+      <div class="streak-chip" title="다가오는 일정">
+        ⏰ <span id="calendar-upcoming-count">0</span>
+      </div>
+    </header>
+    <div class="page-scroll" id="calendar-body"></div>
+  </div><!-- /view-calendar -->
+
   <!-- ===== 하단 내비게이션 ===== -->
   <nav class="bottom-nav" aria-label="메인 내비게이션">
     <button class="nav-item active" data-view="home"><span class="nav-ico">🏠</span><span>홈</span></button>
     <button class="nav-item" data-view="decor" id="nav-decor"><span class="nav-ico">🎨</span><span>꾸미기</span></button>
     <button class="nav-item nav-walk" data-view="curriculum"><span class="nav-ico walk-ico">🎓</span><span>학습</span></button>
     <button class="nav-item" data-view="cave"><span class="nav-ico">🫧</span><span>얼음동굴</span></button>
-    <button class="nav-item" data-view="log"><span class="nav-ico">📊</span><span>기록</span></button>
+    <button class="nav-item" data-view="calendar"><span class="nav-ico">🗓️</span><span>캘린더</span></button>
   </nav>
 
 </div>
 
-<!-- ===== 오늘의 돌봄 미션 팝업 ===== -->
+<!-- ===== 오늘의 미션 팝업 ===== -->
 <div class="modal-overlay hidden" id="mission-modal" role="dialog" aria-modal="true" aria-labelledby="mission-modal-title">
   <div class="modal">
     <div class="modal-head">
-      <h2 id="mission-modal-title">오늘의 돌봄 미션</h2>
+      <h2 id="mission-modal-title">오늘의 미션</h2>
       <span class="missions-progress" id="missions-progress">0 / 5</span>
       <button class="modal-close" id="modal-close" aria-label="닫기">✕</button>
     </div>
@@ -211,19 +221,6 @@
   </div>
 </div>
 
-<!-- ===== 오늘의 상태 확인 팝업 (빙글이의 생존 매뉴얼) ===== -->
-<div class="modal-overlay hidden" id="checkin-modal" role="dialog" aria-modal="true" aria-labelledby="checkin-modal-title">
-  <div class="modal">
-    <div class="modal-head">
-      <h2 id="checkin-modal-title">오늘의 상태 확인</h2>
-      <span class="manual-chip">📜 생존 매뉴얼</span>
-      <button class="modal-close" id="checkin-close" aria-label="닫기">✕</button>
-    </div>
-    <!-- 단계별 내용은 JS가 렌더링 -->
-    <div class="checkin-body" id="checkin-body"></div>
-  </div>
-</div>
-
 <!-- ===== 동굴 방문 팝업 (친구/내 동굴) — 내용은 JS가 렌더링 ===== -->
 <div class="modal-overlay hidden" id="cave-modal" role="dialog" aria-modal="true">
   <div class="modal" id="cave-modal-body"></div>
@@ -252,5 +249,6 @@
 
 <script src="js/app.js"></script>
 <script src="js/lectures.js"></script>
+<script src="js/calendar.js"></script>
 </body>
 </html>
