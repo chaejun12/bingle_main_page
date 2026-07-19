@@ -63,6 +63,10 @@
             <span class="fab-ico">📚</span>
             <span class="fab-badge" id="lecture-fab-badge">0/14</span>
           </button>
+          <button class="fab fab-diary" id="diary-fab" aria-label="오늘의 일기 쓰기">
+            <span class="fab-ico">📔</span>
+            <span class="fab-badge" id="diary-fab-badge">일기</span>
+          </button>
         </div>
 
         <div class="bubble" id="speech-bubble">톡. 톡. 나 여기 있어!</div>
@@ -134,6 +138,33 @@
     </header>
     <div class="page-scroll" id="curriculum-list"></div>
   </div><!-- /view-curriculum -->
+
+  <!-- ==================== 일기 뷰 (오늘의 좋았던 일 · 감사 기록) ==================== -->
+  <div class="view hidden" id="view-diary">
+    <header class="top-bar">
+      <div class="greeting">
+        <p class="date" id="diary-sub">오늘의 기록</p>
+        <h1 class="hello">📔 한 줄 일기</h1>
+      </div>
+      <button class="page-back-btn" id="diary-back" aria-label="뒤로 가기">← 뒤로</button>
+    </header>
+    <div class="page-scroll" id="diary-body"></div>
+  </div><!-- /view-diary -->
+
+  <!-- ==================== 꾸미기 상점 뷰 (라이브 미리보기) ==================== -->
+  <div class="view hidden" id="view-decor">
+    <header class="top-bar">
+      <div class="greeting">
+        <p class="date">얼음 조각으로 방을 꾸며봐</p>
+        <h1 class="hello">🛍️ 꾸미기 상점</h1>
+      </div>
+      <div class="coin-chip" title="보유 얼음 조각">
+        <span class="coin-ice">❄️</span>
+        <span id="shop-coin-count">0</span>
+      </div>
+    </header>
+    <div class="page-scroll" id="decor-page-body"></div>
+  </div><!-- /view-decor -->
 
   <!-- ==================== 캘린더 뷰 (의대생 일정 관리) ==================== -->
   <div class="view hidden" id="view-calendar">
@@ -234,17 +265,6 @@
   <div class="vlog-frame" id="vlog-frame"></div>
 </div>
 
-<!-- ===== 냉장고 꾸미기 팝업 (바닥 · 벽 선택) — 내용은 JS가 렌더링 ===== -->
-<div class="modal-overlay hidden" id="decor-modal" role="dialog" aria-modal="true" aria-labelledby="decor-modal-title">
-  <div class="modal">
-    <div class="modal-head">
-      <h2 id="decor-modal-title">🎨 냉장고 꾸미기</h2>
-      <button class="modal-close" id="decor-close" aria-label="닫기">✕</button>
-    </div>
-    <div id="decor-body"></div>
-  </div>
-</div>
-
 <!-- ===== 3시간 체크인 팝업 (지금 뭐 하고 있어?) — 내용은 JS가 렌더링 ===== -->
 <div class="modal-overlay hidden" id="timelog-modal" role="dialog" aria-modal="true" aria-labelledby="timelog-modal-title">
   <div class="modal">
@@ -261,5 +281,6 @@
 <script src="js/lectures.js"></script>
 <script src="js/calendar.js"></script>
 <script src="js/timelog.js"></script>
+<script src="js/diary.js"></script>
 </body>
 </html>

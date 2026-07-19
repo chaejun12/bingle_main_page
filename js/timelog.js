@@ -73,14 +73,17 @@ function choiceLabel(actId) {
   return found ? found[1] : actId;
 }
 
-/* 해당 슬롯에 걸리는 오늘 캘린더 일정 (시간 지정된 것만) */
+/* 해당 슬롯에 걸리는 오늘 캘린더 일정 (시간 지정된 것만)
+   끝 시간이 있으면 [시작, 끝) 범위와 슬롯의 겹침으로 판정 */
 function slotEvent(slotIdx) {
   if (typeof calState === 'undefined') return null;
   const s = TIME_SLOTS[slotIdx];
+  const toMin = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
   return calState.events.find((e) => {
     if (e.date !== todayStr() || !e.time) return false;
-    const h = Number(e.time.slice(0, 2));
-    return h >= s.start && h < s.end;
+    const evStart = toMin(e.time);
+    const evEnd = e.timeEnd ? toMin(e.timeEnd) : evStart + 1;
+    return evStart < s.end * 60 && evEnd > s.start * 60;
   }) || null;
 }
 
