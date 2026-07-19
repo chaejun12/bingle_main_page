@@ -18,8 +18,8 @@
   /* 픽셀 아트 테마: 부드러운 블러 대신 각진 오프셋 그림자 */
   --shadow: 3px 3px 0 rgba(30, 58, 95, 0.10);
   --radius: 18px;
-  --font-round: 'Galmuri11', 'Jua', sans-serif;
-  --font-body: 'Galmuri9', 'Gowun Dodum', sans-serif;
+  --font-round: 'Pretendard Variable', 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+  --font-body: 'Pretendard Variable', 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
   --pixel-border: 2px solid #d5e9f5;
 }
 
@@ -2308,4 +2308,98 @@ body {
   font-size: 12.5px;
   padding: 0 16px;
   cursor: pointer;
+}
+
+/* ============================================
+   Pretendard 전환 — 제목·칩 가독성용 굵기 보정
+   ============================================ */
+.hello, .modal-head h2, .lec-title, .cal-month-title,
+.cur-sector-title, .cal-day-title, .cs-title, .vlog-caption .cap-main {
+  font-weight: 700;
+}
+
+.streak-chip, .coin-chip, .fab-badge, .fab-label, .missions-progress,
+.manual-chip, .cur-status, .cal-day-dday, .cur-sector-count,
+.page-back-btn, .lec-done-btn, .lec-copy-btn, .cal-dday .cd-count,
+.cave-study, .cs-today, .m-temp {
+  font-weight: 600;
+}
+
+.date, .lec-topic, .cur-topic, .cal-legend { letter-spacing: 0; }
+
+/* ============================================
+   3시간 체크인 ⏱️
+   ============================================ */
+.timelog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.timelog-choice {
+  border: var(--pixel-border);
+  background: var(--card);
+  border-radius: 14px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  padding: 12px 4px;
+  cursor: pointer;
+  transition: transform 0.12s, background 0.15s, border-color 0.15s;
+  box-shadow: var(--shadow);
+}
+
+.timelog-choice:hover { transform: translateY(-1px); background: var(--ice-50); }
+.timelog-choice:active { transform: scale(0.96); }
+
+.timelog-choice.selected {
+  background: var(--ice-100);
+  border-color: var(--ice-300);
+}
+
+.timelog-later {
+  width: 100%;
+  border: none;
+  background: var(--ice-100);
+  color: var(--navy-soft);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 14px;
+  padding: 11px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.timelog-later:hover { background: var(--ice-200); }
+
+/* ===== 캘린더 시간 입력 ===== */
+.cal-event .ce-time {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ice-400);
+  white-space: nowrap;
+}
+
+.cal-add-form input[type='time'] {
+  flex: none;
+  width: 92px;
+  border: var(--pixel-border);
+  border-radius: 12px;
+  padding: 9px 8px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--navy);
+  background: var(--ice-50);
+  outline: none;
+}
+
+.cal-add-form input[type='time']:focus { border-color: var(--ice-300); }
+
+.cal-time-hint {
+  padding: 6px 2px 0;
+  text-align: left;
+  font-size: 10.5px;
 }

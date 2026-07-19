@@ -72,9 +72,8 @@ const idleLines = [
 const happyLines = [
   '방금 뭐야? 입꼬리!',
   '웃었는데? 착각 아니야!',
-  '오~ 덕분에 몸이 단단해지는 기분이야!',
+  '오~ 기분 좋다!',
   '역시 내 담당 인간이라니까!',
-  '조금씩, 우리 같이 회복하자!',
 ];
 
 let bubbleTimer = null;
@@ -117,13 +116,6 @@ function reactHappy() {
 
 binglee.addEventListener('click', () => {
   reactHappy();
-  // 빙글이는 가끔 웃음을 기록한다
-  if (Math.random() < 0.3) {
-    const now = new Date();
-    const h = now.getHours();
-    const m = String(now.getMinutes()).padStart(2, '0');
-    showToast(`✏️ 기록: ${state.userName || '인간'}, ${h}시 ${m}분. 아주 작게 웃음.`);
-  }
 });
 
 /* ---------- 토스트 ---------- */
@@ -439,6 +431,9 @@ const ACT = {
   game:    { emoji: '🎮', bg: '#e1f5fe', doing: '게임에 초집중하는 중', anim: 'mb-type', pose: 'sitting' },
   sleep:   { emoji: '💤', bg: '#ede7f6', doing: '쿨쿨 자는 중', anim: 'mb-sleep', pose: 'sitting' },
   cook:    { emoji: '🍳', bg: '#fff8e1', doing: '뚝딱뚝딱 요리하는 중', anim: 'mb-type', pose: 'working' },
+  study:   { emoji: '📖', bg: '#e8f0fe', doing: '집중해서 공부하는 중', anim: 'mb-type', pose: 'working' },
+  lecture: { emoji: '🏫', bg: '#fff3e0', doing: '수업을 듣는 중', anim: '', pose: 'sitting' },
+  hospital:{ emoji: '🏥', bg: '#e0f7f4', doing: '병원 실습을 도는 중', anim: 'mb-walk', pose: 'standing' },
 };
 
 /* ---------- 마을 주민 데이터 (프로토타입 목업) ----------
@@ -512,6 +507,15 @@ const sentKey = 'bingle_letters_sent';
 const getSent = () => JSON.parse(localStorage.getItem(sentKey) || '[]');
 
 function personName(p) { return p.me ? (state.userName || '나') : p.name; }
+
+/* 내 V-log는 3시간 체크인 기록으로 실시간 생성(timelog.js), 친구는 목업 */
+function personVlog(p) {
+  if (p.me && typeof buildMyVlog === 'function') {
+    const segs = buildMyVlog();
+    if (segs.length) return segs;
+  }
+  return p.vlog;
+}
 
 /* 학습 현황: 나는 실제 진행 상태(lectures.js), 친구는 목업 데이터 */
 function personStudy(p) {
@@ -772,7 +776,7 @@ function closeVlog() {
 }
 
 function vlogNext() {
-  const segs = PEOPLE[vlog.person].vlog.length;
+  const segs = personVlog(PEOPLE[vlog.person]).length;
   if (vlog.seg < segs - 1) { vlog.seg += 1; }
   else if (vlog.person < PEOPLE.length - 1) { vlog.person += 1; vlog.seg = 0; }
   else {
@@ -787,7 +791,7 @@ function vlogPrev() {
   if (vlog.seg > 0) { vlog.seg -= 1; }
   else if (vlog.person > 0) {
     vlog.person -= 1;
-    vlog.seg = PEOPLE[vlog.person].vlog.length - 1;
+    vlog.seg = personVlog(PEOPLE[vlog.person]).length - 1;
   }
   renderVlog();
 }
@@ -795,8 +799,9 @@ function vlogPrev() {
 function renderVlog() {
   clearTimeout(vlog.timer);
   const p = PEOPLE[vlog.person];
-  const seg = p.vlog[vlog.seg];
-  const act = ACT[seg.act];
+  const segList = personVlog(p);
+  const seg = segList[Math.min(vlog.seg, segList.length - 1)];
+  const act = ACT[seg.act] || ACT.music;
 
   vlogFrame.innerHTML = `
     <button class="vlog-close" aria-label="닫기">✕</button>
@@ -808,7 +813,7 @@ function renderVlog() {
         </button>`).join('')}
     </div>
     <div class="vlog-progress">
-      ${p.vlog.map((_, i) => `
+      ${segList.map((_, i) => `
         <span class="bar ${i < vlog.seg ? 'done' : i === vlog.seg ? 'now' : ''}"
           style="--seg-ms:${SEG_MS}ms"><i></i></span>`).join('')}
     </div>
