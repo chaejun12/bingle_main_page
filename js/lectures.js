@@ -586,9 +586,13 @@ function saveLectureState() {
 }
 
 /* ---------- UI 요소 ---------- */
-const lectureModal = $('#lecture-modal');
 const lectureBody = $('#lecture-body');
 const lectureFab = $('#lecture-fab');
+const lectureSub = $('#lecture-sub');
+const lectureView = $('#view-lecture');
+
+/* 강의 페이지에서 뒤로 갔을 때 돌아갈 뷰 (home 또는 curriculum) */
+let lectureReturnTo = 'home';
 
 /* ---------- 렌더링 ---------- */
 function lectureBadgeText() {
@@ -608,16 +612,11 @@ function renderLecture() {
   const isToday = lectureState.viewing === maxDay;
   const done = lectureState.doneDays.includes(lec.day);
 
-  lectureBody.innerHTML = `
-    <div class="lec-daynav">
-      <button class="lec-arrow" id="lec-prev" ${lec.day <= 1 ? 'disabled' : ''}>◀</button>
-      <div class="lec-daychip">
-        <span class="lec-day">Day ${lec.day}</span>
-        <span class="lec-total">/ ${LECTURES.length}${isToday ? ' · 오늘' : ''}</span>
-      </div>
-      <button class="lec-arrow" id="lec-next" ${lec.day >= maxDay ? 'disabled' : ''}>▶</button>
-    </div>
+  lectureSub.textContent = isToday
+    ? `Day ${lec.day} / ${LECTURES.length} · 오늘의 과제`
+    : `Day ${lec.day} / ${LECTURES.length} · 복습`;
 
+  lectureBody.innerHTML = `
     <div class="lec-title-row">
       <span class="lec-emoji">${lec.emoji}</span>
       <div>
@@ -661,15 +660,8 @@ function renderLecture() {
     <a class="lec-doc-link" href="${lec.docs}" target="_blank" rel="noopener">📚 공식 문서에서 더 알아보기 →</a>
 
     <button class="lec-done-btn ${done ? 'done' : ''}" id="lec-done" ${done ? 'disabled' : ''}>
-      ${done ? '✓ 완료한 강의야!' : `오늘 강의 완료! ❄️ +${LECTURE_REWARD}`}
+      ${done ? '✓ 완료한 강의야!' : `${isToday ? '오늘' : `Day ${lec.day}`} 강의 완료! ❄️ +${LECTURE_REWARD}`}
     </button>`;
-
-  $('#lec-prev').addEventListener('click', () => {
-    if (lectureState.viewing > 1) { lectureState.viewing -= 1; renderLecture(); lectureBody.scrollTop = 0; }
-  });
-  $('#lec-next').addEventListener('click', () => {
-    if (lectureState.viewing < maxDay) { lectureState.viewing += 1; renderLecture(); lectureBody.scrollTop = 0; }
-  });
 
   $('#lec-copy').addEventListener('click', () => {
     navigator.clipboard.writeText(lec.practice.prompt)
@@ -697,27 +689,80 @@ function escapeHTML(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function openLectureModal() {
-  // 최초 오픈 시 시작일 기록 → 그날이 Day 1
+/* 최초 오픈 시 시작일 기록 → 그날이 Day 1 */
+function ensureStartDate() {
   if (!lectureState.startDate) {
     lectureState.startDate = todayStr();
     localStorage.setItem('bingle_lecture_start', lectureState.startDate);
     say('오늘부터 매일 AI 강의 하나씩! 내가 옆에서 같이 들을게 📚', 3600);
   }
-  lectureState.viewing = unlockedDay();
+}
+
+/* 강의 페이지 열기 — day 강의를 보여주고, 뒤로 가면 returnTo 뷰로 복귀 */
+function openLectureView(day, returnTo) {
+  ensureStartDate();
+  lectureState.viewing = Math.max(1, Math.min(unlockedDay(), day));
+  lectureReturnTo = returnTo;
   renderLecture();
+  switchView('lecture');
   lectureBody.scrollTop = 0;
-  openModal(lectureModal);
+}
+
+/* ============================================
+   전체 학습 페이지 — 14일 커리큘럼 목록
+   ============================================ */
+const curriculumList = $('#curriculum-list');
+
+function renderCurriculum() {
+  ensureStartDate();
+  const maxDay = unlockedDay();
+  $('#curriculum-progress').textContent = lectureBadgeText();
+
+  curriculumList.innerHTML = `
+    <div class="ice-line cur-intro">
+      <img class="sprite sm mini-ice-sprite" src="assets/binglee/working.png" alt="빙글이" draggable="false" />
+      <p>하루에 하나씩 열리는 14일 커리큘럼이야.\n완료한 강의는 언제든 다시 볼 수 있어!</p>
+    </div>
+    <ul class="cur-list">
+      ${LECTURES.map((lec) => {
+        const done = lectureState.doneDays.includes(lec.day);
+        const isToday = lec.day === maxDay;
+        const locked = lec.day > maxDay;
+        const status = done ? '<span class="cur-status done">✓ 완료</span>'
+          : isToday ? '<span class="cur-status today">오늘</span>'
+          : locked ? `<span class="cur-status locked">🔒 D+${lec.day - maxDay}</span>`
+          : '<span class="cur-status open">미완료</span>';
+        return `
+        <li>
+          <button class="cur-item ${done ? 'is-done' : ''} ${isToday ? 'is-today' : ''} ${locked ? 'is-locked' : ''}"
+            data-day="${lec.day}" ${locked ? 'aria-disabled="true"' : ''}>
+            <span class="cur-emoji">${lec.emoji}</span>
+            <span class="cur-body">
+              <span class="cur-day">Day ${lec.day}</span>
+              <span class="cur-title">${lec.title}</span>
+              <span class="cur-topic">${lec.topic}</span>
+            </span>
+            ${status}
+          </button>
+        </li>`;
+      }).join('')}
+    </ul>`;
+
+  curriculumList.querySelectorAll('.cur-item').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const day = Number(btn.dataset.day);
+      if (day > unlockedDay()) {
+        showToast(`🔒 Day ${day}는 ${day - unlockedDay()}일 뒤에 열려! 하루에 하나씩이야`);
+        return;
+      }
+      openLectureView(day, 'curriculum');
+    });
+  });
 }
 
 /* ---------- 이벤트 연결 ---------- */
-lectureFab.addEventListener('click', openLectureModal);
-$('#lecture-close').addEventListener('click', () => closeModal(lectureModal));
-lectureModal.addEventListener('click', (e) => {
-  if (e.target === lectureModal) closeModal(lectureModal);
-});
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeModal(lectureModal);
-});
+// 우상단 📚 버튼 = 오늘의 과제 전용 (항상 오늘 강의로)
+lectureFab.addEventListener('click', () => openLectureView(unlockedDay(), 'home'));
+$('#lecture-back').addEventListener('click', () => switchView(lectureReturnTo));
 
 renderLectureFab();

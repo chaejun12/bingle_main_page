@@ -115,11 +115,37 @@
 
   </div><!-- /view-cave -->
 
+  <!-- ==================== 오늘의 AI 강의 뷰 (오늘의 과제 전용) ==================== -->
+  <div class="view hidden" id="view-lecture">
+    <header class="top-bar">
+      <div class="greeting">
+        <p class="date" id="lecture-sub">오늘의 과제</p>
+        <h1 class="hello">📚 오늘의 AI 강의</h1>
+      </div>
+      <button class="page-back-btn" id="lecture-back" aria-label="뒤로 가기">← 뒤로</button>
+    </header>
+    <div class="page-scroll lecture-body" id="lecture-body"></div>
+  </div><!-- /view-lecture -->
+
+  <!-- ==================== 전체 학습 뷰 (14일 커리큘럼 목록) ==================== -->
+  <div class="view hidden" id="view-curriculum">
+    <header class="top-bar">
+      <div class="greeting">
+        <p class="date">의대생 × Claude · 14일 커리큘럼</p>
+        <h1 class="hello">🎓 전체 학습</h1>
+      </div>
+      <div class="streak-chip" title="완료한 강의">
+        📚 <span id="curriculum-progress">0/14</span>
+      </div>
+    </header>
+    <div class="page-scroll" id="curriculum-list"></div>
+  </div><!-- /view-curriculum -->
+
   <!-- ===== 하단 내비게이션 ===== -->
   <nav class="bottom-nav" aria-label="메인 내비게이션">
     <button class="nav-item active" data-view="home"><span class="nav-ico">🏠</span><span>홈</span></button>
     <button class="nav-item" data-view="decor" id="nav-decor"><span class="nav-ico">🎨</span><span>꾸미기</span></button>
-    <button class="nav-item nav-walk" data-view="walk"><span class="nav-ico walk-ico">🚶</span><span>산책</span></button>
+    <button class="nav-item nav-walk" data-view="curriculum"><span class="nav-ico walk-ico">🎓</span><span>학습</span></button>
     <button class="nav-item" data-view="cave"><span class="nav-ico">🫧</span><span>얼음동굴</span></button>
     <button class="nav-item" data-view="log"><span class="nav-ico">📊</span><span>기록</span></button>
   </nav>
@@ -221,18 +247,6 @@
       <button class="modal-close" id="decor-close" aria-label="닫기">✕</button>
     </div>
     <div id="decor-body"></div>
-  </div>
-</div>
-
-<!-- ===== AI 데일리 강의 팝업 (의대생용 하루 한 강의) — 내용은 JS가 렌더링 ===== -->
-<div class="modal-overlay hidden" id="lecture-modal" role="dialog" aria-modal="true" aria-labelledby="lecture-modal-title">
-  <div class="modal lecture-modal">
-    <div class="modal-head">
-      <h2 id="lecture-modal-title">📚 오늘의 AI 강의</h2>
-      <span class="manual-chip">의대생 × Claude</span>
-      <button class="modal-close" id="lecture-close" aria-label="닫기">✕</button>
-    </div>
-    <div class="lecture-body" id="lecture-body"></div>
   </div>
 </div>
 

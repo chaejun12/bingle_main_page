@@ -700,7 +700,12 @@ function miniBingleeHTML(person, anim = '', size = '', pose = 'standing') {
 }
 
 /* ---------- 뷰 전환 ---------- */
-const views = { home: $('#view-home'), cave: $('#view-cave') };
+const views = {
+  home: $('#view-home'),
+  cave: $('#view-cave'),
+  lecture: $('#view-lecture'),
+  curriculum: $('#view-curriculum'),
+};
 
 function switchView(name) {
   Object.entries(views).forEach(([k, el]) => el.classList.toggle('hidden', k !== name));
@@ -708,12 +713,13 @@ function switchView(name) {
     btn.classList.toggle('active', btn.dataset.view === name);
   });
   if (name === 'cave') onEnterCave();
+  if (name === 'curriculum') renderCurriculum(); // lectures.js
 }
 
 document.querySelectorAll('.nav-item').forEach((btn) => {
   btn.addEventListener('click', () => {
     const v = btn.dataset.view;
-    if (v === 'home' || v === 'cave') switchView(v);
+    if (v === 'home' || v === 'cave' || v === 'curriculum') switchView(v);
     else if (v === 'decor') openDecorShop(); // 현재 뷰 위에 상점 팝업
     else showToast('🚧 준비 중인 기능이야! 조금만 기다려줘');
   });

@@ -1657,42 +1657,29 @@ body {
   50% { box-shadow: 0 6px 26px rgba(87, 185, 138, 0.75); }
 }
 
-.lecture-modal { max-height: 88vh; display: flex; flex-direction: column; }
-
-.lecture-body { overflow-y: auto; padding-bottom: 4px; }
-
-/* 날짜 내비게이션 */
-.lec-daynav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
+/* ===== 페이지 공통 (강의 · 전체 학습 뷰) ===== */
+.page-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2px 2px 12px;
 }
 
-.lec-arrow {
+.page-back-btn {
   border: var(--pixel-border);
   background: var(--card);
   color: var(--navy-soft);
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  font-size: 13px;
+  font-family: var(--font-round);
+  font-size: 12.5px;
+  border-radius: 999px;
+  padding: 8px 14px;
   cursor: pointer;
   transition: background 0.15s, transform 0.15s;
+  box-shadow: var(--shadow);
 }
 
-.lec-arrow:hover:not(:disabled) { background: var(--ice-100); transform: scale(1.06); }
-.lec-arrow:disabled { opacity: 0.3; cursor: default; }
-
-.lec-daychip {
-  font-family: var(--font-round);
-  background: var(--ice-100);
-  border-radius: 999px;
-  padding: 6px 16px;
-}
-
-.lec-day { color: var(--navy); font-size: 15px; }
-.lec-total { color: var(--navy-soft); font-size: 12px; }
+.page-back-btn:hover { background: var(--ice-100); transform: translateY(-1px); }
+.page-back-btn:active { transform: scale(0.96); }
 
 /* 제목 */
 .lec-title-row {
@@ -1865,3 +1852,86 @@ body {
   cursor: default;
   opacity: 0.85;
 }
+
+/* ===== 전체 학습 페이지 — 커리큘럼 목록 ===== */
+.cur-intro { margin-bottom: 12px; }
+
+.cur-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.cur-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  background: var(--card);
+  border: var(--pixel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 13px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  color: var(--navy);
+  transition: transform 0.15s, background 0.15s, opacity 0.2s;
+}
+
+.cur-item:hover:not(.is-locked) { transform: translateY(-1px); background: var(--ice-50); }
+.cur-item:active:not(.is-locked) { transform: scale(0.99); }
+
+.cur-item.is-today {
+  border-color: #8fd3a8;
+  background: linear-gradient(160deg, #eafaf1 0%, #ffffff 70%);
+}
+
+.cur-item.is-done { opacity: 0.72; }
+
+.cur-item.is-locked {
+  opacity: 0.5;
+  cursor: default;
+  background: var(--ice-50);
+}
+
+.cur-emoji { font-size: 24px; flex: none; }
+
+.cur-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cur-day {
+  font-family: var(--font-round);
+  font-size: 11px;
+  color: var(--ice-400);
+}
+
+.cur-title {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.cur-topic {
+  font-size: 11px;
+  color: var(--navy-soft);
+}
+
+.cur-status {
+  flex: none;
+  font-family: var(--font-round);
+  font-size: 11px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.cur-status.done { background: #e3f7ee; color: #3f9d6e; }
+.cur-status.today { background: linear-gradient(135deg, #8fd3a8, #57b98a); color: #fff; }
+.cur-status.locked { background: var(--ice-100); color: var(--navy-soft); }
+.cur-status.open { background: var(--coral-soft); color: var(--coral); }
