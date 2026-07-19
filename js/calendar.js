@@ -13,7 +13,7 @@ const CAL_CATS = [
 ];
 
 const calState = {
-  events: loadJSON('bingle_calendar_events', []), // {id, date:'YYYY-MM-DD', cat, title}
+  events: loadJSON('bingle_calendar_events', []), // {id, date:'YYYY-MM-DD', cat, title, time?:'HH:MM'}
   year: new Date().getFullYear(),
   month: new Date().getMonth(), // 0-11
   selected: null,               // 'YYYY-MM-DD'
@@ -35,7 +35,10 @@ function catOf(id) {
 }
 
 function eventsOn(key) {
-  return calState.events.filter((e) => e.date === key);
+  // 시간 있는 일정 먼저, 시간순 정렬
+  return calState.events
+    .filter((e) => e.date === key)
+    .sort((a, b) => (a.time || '99:99').localeCompare(b.time || '99:99'));
 }
 
 /* 기초 강의를 완료한 날짜들 (시작일 + Day번호로 환산) */
@@ -149,6 +152,7 @@ function dayPanelHTML() {
             <li class="cal-event">
               <span class="ce-dot">${catOf(e.cat).dot}</span>
               <span class="ce-title">${e.title}</span>
+              ${e.time ? `<span class="ce-time">⏰ ${e.time}</span>` : ''}
               <span class="ce-cat">${catOf(e.cat).label}</span>
               <button class="ce-del" data-del="${e.id}" aria-label="일정 삭제">✕</button>
             </li>`).join('')}
@@ -164,8 +168,10 @@ function dayPanelHTML() {
         <form class="cal-add-form" id="cal-add-form">
           <input type="text" id="cal-add-title" maxlength="24"
             placeholder="${catOf(calState.addCat).label} 이름 (예: 해부학 중간)" autocomplete="off" />
+          <input type="time" id="cal-add-time" title="시간 (선택)" />
           <button type="submit">추가</button>
         </form>
+        <p class="cal-hint cal-time-hint">⏰ 시간을 넣으면 그 시간대 V-log가 이 일정으로 자동 기록돼!</p>
       </div>
     </div>`;
 }
@@ -225,15 +231,17 @@ function renderCalendar() {
       e.preventDefault();
       const title = $('#cal-add-title').value.trim();
       if (!title || !calState.selected) return;
+      const time = $('#cal-add-time').value || '';
       calState.events.push({
         id: 'ev' + Date.now(),
         date: calState.selected,
         cat: calState.addCat,
         title,
+        time,
       });
       saveCalEvents();
       renderCalendar();
-      showToast(`${catOf(calState.addCat).dot} '${title}' 일정을 추가했어!`);
+      showToast(`${catOf(calState.addCat).dot} '${title}'${time ? ` (${time})` : ''} 일정을 추가했어!`);
     });
   }
 }
