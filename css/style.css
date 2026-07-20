@@ -2639,3 +2639,115 @@ body {
 .cal-time-row input[type='time']:focus { border-color: var(--ice-300); }
 
 .cal-time-tilde { color: var(--navy-soft); font-size: 12px; }
+
+/* ============================================
+   캘린더 주 단위 확대 뷰 — 모든 일정 칩으로 표시
+   ============================================ */
+/* 월 그리드의 넘침 표시 (+n) */
+.cal-more {
+  font-style: normal;
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--coral);
+  margin-left: 1px;
+  letter-spacing: 0;
+}
+
+.wk-title small {
+  font-weight: 500;
+  font-size: 11.5px;
+  color: var(--navy-soft);
+  margin-left: 4px;
+}
+
+.wk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wk-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  border: none;
+  background: none;
+  border-radius: 12px;
+  padding: 7px 8px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-body);
+  transition: background 0.15s;
+}
+
+.wk-row:hover { background: var(--ice-50); }
+
+.wk-row.today { background: var(--ice-100); }
+
+.wk-row.selected {
+  outline: 2px solid var(--ice-400);
+  outline-offset: -2px;
+  background: var(--ice-50);
+}
+
+.wk-date {
+  flex: none;
+  width: 40px;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--navy);
+}
+
+.wk-date b { font-size: 14px; font-weight: 700; }
+.wk-date small { font-size: 10px; color: var(--navy-soft); }
+.wk-date em { font-style: normal; font-size: 9px; }
+.wk-date.sun b { color: #e0705a; }
+.wk-date.sat b { color: var(--ice-400); }
+
+.wk-events {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.wk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--navy);
+  background: var(--ice-50);
+  border: 1px solid var(--ice-200);
+  border-radius: 999px;
+  padding: 3px 9px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wk-chip i {
+  font-style: normal;
+  font-size: 9.5px;
+  color: var(--navy-soft);
+  font-weight: 500;
+}
+
+/* 카테고리별 은은한 색 구분 */
+.wk-chip.exam       { background: #ffefec; border-color: #f6c4b8; }
+.wk-chip.practice   { background: #e9f3fe; border-color: #b9d8f5; }
+.wk-chip.assignment { background: #fff8e2; border-color: #efdda2; }
+.wk-chip.study      { background: #eaf8ef; border-color: #b9e3c6; }
+.wk-chip.etc        { background: #f1f3f6; border-color: #d5dbe2; }
+
+.wk-empty {
+  font-size: 10.5px;
+  color: #b3c2d1;
+  padding: 3px 0;
+}
