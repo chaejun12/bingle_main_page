@@ -13,10 +13,11 @@ const CAL_CATS = [
 ];
 
 const calState = {
-  events: loadJSON('bingle_calendar_events', []), // {id, date:'YYYY-MM-DD', cat, title, time?:'HH:MM'}
+  events: loadJSON('bingle_calendar_events', []), // {id, date:'YYYY-MM-DD', cat, title, time?:'HH:MM', timeEnd?:'HH:MM'}
   year: new Date().getFullYear(),
   month: new Date().getMonth(), // 0-11
-  selected: null,               // 'YYYY-MM-DD'
+  selected: null,               // 'YYYY-MM-DD' (renderCalendar 최초 호출 시 오늘로 설정)
+  weekAnchor: null,             // 주 단위 뷰가 보여줄 주의 기준 날짜
   addCat: 'exam',               // 추가 폼에서 선택된 카테고리
 };
 
@@ -103,13 +104,15 @@ function gridHTML() {
   for (let d = 1; d <= daysInMonth; d++) {
     const key = dateKey(y, m, d);
     const evts = eventsOn(key);
+    // 원 미리보기는 3개까지, 넘치면 +n — 자세한 목록은 아래 주 단위 뷰에서
     const dots = evts.slice(0, 3).map((e) => catOf(e.cat).dot).join('');
+    const more = evts.length > 3 ? `<i class="cal-more">+${evts.length - 3}</i>` : '';
     const dow = (firstDow + d - 1) % 7;
     cells += `
       <button class="cal-cell day ${key === today ? 'today' : ''} ${key === calState.selected ? 'selected' : ''} ${dow === 0 ? 'sun' : ''} ${dow === 6 ? 'sat' : ''}"
         data-date="${key}">
         <span class="cal-num">${d}</span>
-        <span class="cal-marks">${doneDates.has(key) ? '📚' : ''}${dots}</span>
+        <span class="cal-marks">${doneDates.has(key) ? '📚' : ''}${dots}${more}</span>
       </button>`;
   }
 
@@ -126,6 +129,62 @@ function gridHTML() {
       </div>
       <div class="cal-grid">${cells}</div>
       <p class="cal-legend">📚 강의 완료 ${CAL_CATS.map((c) => `${c.dot} ${c.label}`).join(' ')}</p>
+    </div>`;
+}
+
+/* ---------- 주 단위 확대 뷰 ----------
+   월 캘린더의 원 미리보기(최대 3개) 한계를 보완:
+   선택한 주의 7일을 행으로 펼쳐 모든 일정을 칩으로 보여준다 */
+function sundayOf(key) {
+  const d = new Date(key + 'T00:00:00');
+  d.setDate(d.getDate() - d.getDay());
+  return d;
+}
+
+function keyOfDate(d) {
+  return dateKey(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+function weekHTML() {
+  const start = sundayOf(calState.weekAnchor);
+  const end = new Date(start.getTime() + 6 * 86400000);
+  const today = todayStr();
+  const doneDates = lectureDoneDates();
+  const dowNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+  const rows = [...Array(7)].map((_, i) => {
+    const d = new Date(start.getTime() + i * 86400000);
+    const key = keyOfDate(d);
+    const evts = eventsOn(key);
+    return `
+      <button class="wk-row ${key === today ? 'today' : ''} ${key === calState.selected ? 'selected' : ''}"
+        data-wkday="${key}">
+        <span class="wk-date ${i === 0 ? 'sun' : ''} ${i === 6 ? 'sat' : ''}">
+          <b>${d.getDate()}</b>
+          <small>${dowNames[i]}</small>
+          ${doneDates.has(key) ? '<em>📚</em>' : ''}
+        </span>
+        <span class="wk-events">
+          ${evts.length
+            ? evts.map((e) => `
+                <span class="wk-chip ${e.cat}">
+                  ${catOf(e.cat).dot} ${e.title}${e.time ? `<i>${e.time}${e.timeEnd ? `~${e.timeEnd}` : ''}</i>` : ''}
+                </span>`).join('')
+            : '<span class="wk-empty">일정 없음</span>'}
+        </span>
+      </button>`;
+  }).join('');
+
+  return `
+    <div class="cal-card cal-week-card">
+      <div class="cal-month-nav">
+        <button class="lec-arrow" id="wk-prev">◀</button>
+        <p class="cal-month-title wk-title">📋 주간 상세
+          <small>${start.getMonth() + 1}/${start.getDate()} ~ ${end.getMonth() + 1}/${end.getDate()}</small>
+        </p>
+        <button class="lec-arrow" id="wk-next">▶</button>
+      </div>
+      <div class="wk-list">${rows}</div>
     </div>`;
 }
 
@@ -181,7 +240,11 @@ function dayPanelHTML() {
 }
 
 function renderCalendar() {
-  calendarBody.innerHTML = upcomingHTML() + gridHTML() + dayPanelHTML();
+  // 최초 진입 시 오늘을 선택해 주간 뷰·상세 패널이 바로 보이게
+  if (!calState.selected) calState.selected = todayStr();
+  if (!calState.weekAnchor) calState.weekAnchor = calState.selected;
+
+  calendarBody.innerHTML = upcomingHTML() + gridHTML() + weekHTML() + dayPanelHTML();
 
   $('#cal-prev').addEventListener('click', () => {
     calState.month -= 1;
@@ -197,17 +260,40 @@ function renderCalendar() {
   calendarBody.querySelectorAll('.cal-cell.day').forEach((cell) => {
     cell.addEventListener('click', () => {
       calState.selected = cell.dataset.date;
+      calState.weekAnchor = cell.dataset.date; // 주간 뷰도 그 주로 점프
       renderCalendar();
     });
   });
 
-  // D-day 칩 → 해당 날짜로 이동
+  // 주간 뷰: 주 이동
+  const shiftWeek = (days) => {
+    const d = sundayOf(calState.weekAnchor);
+    d.setDate(d.getDate() + days);
+    calState.weekAnchor = keyOfDate(d);
+    renderCalendar();
+  };
+  $('#wk-prev').addEventListener('click', () => shiftWeek(-7));
+  $('#wk-next').addEventListener('click', () => shiftWeek(7));
+
+  // 주간 뷰: 날짜 행 클릭 → 선택 + 월 캘린더도 그 달로 동기화
+  calendarBody.querySelectorAll('.wk-row').forEach((row) => {
+    row.addEventListener('click', () => {
+      const key = row.dataset.wkday;
+      calState.selected = key;
+      calState.year = Number(key.slice(0, 4));
+      calState.month = Number(key.slice(5, 7)) - 1;
+      renderCalendar();
+    });
+  });
+
+  // D-day 칩 → 해당 날짜로 이동 (월·주 모두 동기화)
   calendarBody.querySelectorAll('[data-goto]').forEach((chip) => {
     chip.addEventListener('click', () => {
       const key = chip.dataset.goto;
       calState.year = Number(key.slice(0, 4));
       calState.month = Number(key.slice(5, 7)) - 1;
       calState.selected = key;
+      calState.weekAnchor = key;
       renderCalendar();
     });
   });
